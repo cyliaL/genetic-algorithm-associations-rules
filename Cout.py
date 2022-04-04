@@ -34,8 +34,8 @@ print(test.fitness,test.support,test.confiance)
 
 
 
-t2 = cout(10,20,30) # constructeur avec valeurs, les getters ne marchent pas il faut appeler directement l'attribut
-print(t2.fitness,t2.support,t2.confiance)
+t1 = cout(10,20,30) # constructeur avec valeurs, les getters ne marchent pas il faut appeler directement l'attribut
+print(t1.fitness,t1.support,t1.confiance)
 
 
 
