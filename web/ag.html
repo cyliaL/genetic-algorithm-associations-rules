@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Projet de fin d'études</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- vendor css -->
+    <link rel="stylesheet" href="assets/css/style.css">
+	<script type="text/javascript" src="/eel.js"></script>
+    
+</head>
+<body class="">
+	<!-- [ Pre-loader ] start -->
+	<div class="loader-bg">
+		<div class="loader-track">
+			<div class="loader-fill"></div>
+		</div>
+	</div>
+	<!-- [ Pre-loader ] End -->
+	<!-- [ navigation menu ] start -->
+	<nav class="pcoded-navbar menu-light ">
+		<div class="navbar-wrapper  ">
+			<div class="navbar-content scroll-div " >
+				
+			
+				
+				<ul class="nav pcoded-inner-navbar ">
+					<li class="nav-item pcoded-menu-caption">
+					    <label>Association rules</label>
+					</li>
+					<li class="nav-item">
+					    <a href="home.html" class="nav-link "><span class="pcoded-micon"><i class="feather icon-home"></i></span><span class="pcoded-mtext">Home</span></a>
+					</li>
+					
+					<li class="nav-item pcoded-menu-caption">
+					    <label>Algorithmes </label>
+					</li>
+					<li class="nav-item pcoded-hasmenu">
+					    <a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-box"></i></span><span class="pcoded-mtext">Méthodes exactes</span></a>
+					    <ul class="pcoded-submenu">
+					        <li><a href="bnb.html">Apriori</a></li>
+					      
+					    </ul>
+					</li>
+					<li class="nav-item pcoded-hasmenu">
+					    <a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-box"></i></span><span class="pcoded-mtext">AG simple</span></a>
+					    <ul class="pcoded-submenu">
+					        <li><a href="recuit_simule.html">GENAR </a></li>
+					        <li><a href="ag.html">EARMGA</a></li>
+							<li><a href="rechtabou.html">ARMMGA</a></li>
+					      
+					    </ul>
+					</li>
+					<li class="nav-item pcoded-hasmenu">
+					    <a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-box"></i></span><span class="pcoded-mtext">AG avec ML</span></a>
+					    <ul class="pcoded-submenu">
+					        <li><a href="HAG.html">AG avec RF</a></li>
+							<li><a href="HAG.html">AG avec SVM</a></li>
+							<li><a href="HAG.html">AG avec ANN</a></li>
+					      
+					    </ul>
+					</li>
+				    <li class="nav-item pcoded-hasmenu">
+					    <a href="dashboard.html" class="nav-link "><span class="pcoded-micon"><i class="feather icon-bar-chart"></i></span><span class="pcoded-mtext">Comparaisons</span></a>
+					</li>
+
+				</ul>
+				
+			
+				
+			</div>
+		</div>
+	</nav>
+	<!-- [ navigation menu ] end -->
+	<!-- [ Header ] start -->
+	<header class="navbar pcoded-header navbar-expand-lg navbar-light header-blue">
+		
+			
+				<div class="m-header">
+					<a class="mobile-menu" id="mobile-collapse" href="#!"><span></span></a>
+					<a href="#!" class="b-brand">
+						<!-- ========   change your logo hear   ============ -->
+						<b style="font-weight: 700;">Data mining</b>
+					</a>
+					<a href="#!" class="mob-toggler">
+						<i class="feather icon-more-vertical"></i>
+					</a>
+				</div>
+				<div class="collapse navbar-collapse">
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item">
+							<a href="#!" class="pop-search"><i class="feather icon-search"></i></a>
+							<div class="search-bar">
+								<input type="text" class="form-control border-0 shadow-none" placeholder="Search hear">
+								<button type="button" class="close" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+						</li>
+					</ul>
+				
+				</div>
+				
+			
+	</header>
+	<!-- [ Header ] end -->
+	
+	
+
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h5 class="m-b-10">Méta Heuristiques</h5>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="home.html"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="#!">Algorithme génétique</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+			<div class="col-md-3 " >
+				<div class="card" >
+                    <div class="card-header">
+                        <h5>Les objets</h5>
+                    </div>
+                    <div class="card-body table-border-style"> 
+                        <div class="table-responsive objects" style="height : 480px ">
+                            <table class="table table-hover"  >
+                                <thead>
+                                    <tr>
+                                      
+                                        <th>Numéro</th>
+                                        <th>Poids</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="body_objets">
+                                 
+                                   
+                                </tbody>
+                            </table>
+                        </div>
+						
+                    </div>
+                </div>
+			</div>
+		    <div class="col-md-9">
+				<div class="card">
+					<div class="card-header d-flex justify-content-between">
+                        <h5 class="mt-2">Ajouter une instance </h5>
+					
+						<div class="custom-file mb-3">
+							<input type="file" class="custom-file-input" id="inputGroupFile03" onchange="loadFile(this.files[0])">
+							<label class="custom-file-label" for="inputGroupFile03">Choose file</label>
+						</div>
+					
+					</div>
+                    <div class="card-body table-border-style">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Capacité du Bin</th>
+                                        <th>Nombre des objets</th>
+                                        <th>Poids des objets</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr> 
+                                        <td id="capacite">vide</td>
+                                        <td id="NB">vide</td>
+                                        <td id="Poids">vide</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+						<h6 class="mt-2">Les paramétres de l'algorithme</h6>
+							<div class="table-responsive mt-5">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+										  
+											<th >POPULATION SIZE</th>
+											<th>MAX GENERATIONS</th>
+											<th>MAX NO CHANGE</th>
+											<th>TOURNAMENT SIZE</th>
+											<th>MUTATION RATE</th>
+											<th>CROSSOVER RATE</th>
+											
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											
+											<td>
+												<input type="number" class="form-control" id="POPSZ" value="0">
+											</td>
+											<td>
+												<input type="number" class="form-control" id="MAXGEN" value="0">
+											</td>
+											<td>
+												<input type="number" class="form-control" id="MAXNCHG" value="0">
+											</td>
+											<td>
+												<input type="number" class="form-control" id="TOURSZ" value="0">
+											</td>
+											<td>
+												<input type="number" class="form-control" id="MUTRT" value="0">
+											</td>
+											<td>
+												<input type="number" class="form-control" id="CRRT" value="0">
+											</td>
+										</tr>
+									  
+									</tbody>
+									
+								</table>
+							</div>
+							
+                    </div>
+					<div class="card-body d-flex justify-content-center">
+						<button type="button" class="btn  btn-success col-sm-6" id="btn_run_RS" onclick="agjs()" >Résoudre le probléme </button>
+					</div>
+                </div>     
+            </div>
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header">
+						<h5>Solution Algorithme génétique </h5>
+					</div>
+					<div class="card-body">
+						<div class="table-responsive ">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th >Nombre des bins </th>
+										<th>Temps d'exécution</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										
+										<td id="sol_bins" >
+											
+										</td>
+
+										<td id="time">
+										
+										</td>
+										
+									</tr>
+								  
+								</tbody>
+								
+							</table>
+						</div>
+					</div>
+					<div class="card-footer pt-3 table-aff">
+							<h6>L'affectation des objets</h6>
+							<table class="table table-hover mt-4 table-stripped text-center" >
+								<thead>
+									<tr>
+										<th style="width: 15% ;">Numéro du bin  </th>
+										<th style="width: 15% ;">Les objets affectés  </th>
+										<th style="width: 15% ;">Capacité remplie</th>
+										<th style="width: 55% ;">Remplissage du Bin</th>
+									</tr>
+								</thead>
+								
+								<tbody class="affectation " >
+									
+								  
+								</tbody>
+						
+							</table>
+					
+					</div>
+				</div>
+			</div>
+        </div>
+		<!-- [ Main Content ] end -->
+    </div>
+</div>
+
+    <!-- Required Js -->
+    <script src="assets/js/vendor-all.min.js"></script>
+    <script src="assets/js/plugins/bootstrap.min.js"></script>
+    <script src="assets/js/ripple.js"></script>
+    <script src="assets/js/pcoded.min.js"></script>
+	<script src="assets/js/ag.js"></script>
+
+<!-- Apex Chart -->
+<script src="assets/js/plugins/apexcharts.min.js"></script>
+
+
+
+</body>
+
+</html>
