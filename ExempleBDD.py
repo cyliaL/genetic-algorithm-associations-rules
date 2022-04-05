@@ -10,4 +10,4 @@ class ExempleBDD :
         self.bdd= bdd
 
 test = ExempleBDD()
-print(len(test.getBDD()[0]))
+print(len(test.getBDD()))
