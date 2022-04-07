@@ -39,7 +39,7 @@ def ffd_py(c,w):
 #******************************FFI**********************************************
 @eel.expose
 def ffi_py(c,w):
-  temps_Debut_exec = datetime.now() 
+  temps_Debut_exec = datetime.now()
   n = len(w)
   order = sorted([i for i in range(n)],key = lambda i:w[i])
   bin_for_item = [-1 for i in range(n)]

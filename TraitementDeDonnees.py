@@ -1,5 +1,3 @@
-
-
 import Transaction
 
 class TraitementDeDonnees:
@@ -9,5 +7,3 @@ class TraitementDeDonnees:
         self.nbItems=0
         self.totalItems=0
         self.bdd=[Transaction()]
-
- 
