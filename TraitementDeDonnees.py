@@ -1,4 +1,6 @@
+#bdd.append(["1","2"])
 
+#bdd.append(["D"])
 
 class TraitementDeDonnees:
    def __init__(self):
@@ -8,14 +10,3 @@ class TraitementDeDonnees:
         self.totalItems=0
         self.bdd=[]
 
-
-
-bdd=[]
-
-bdd.append(["1","2"])
-
-bdd.append(["D"])
-
-
-
-print(bdd[0][0])
