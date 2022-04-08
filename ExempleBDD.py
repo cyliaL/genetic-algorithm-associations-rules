@@ -8,5 +8,5 @@ class ExempleBDD :
     def setBDD(self, bdd):
         self.bdd= bdd
 
-test = ExempleBDD()
-print(len(test.getBDD()))
+#test = ExempleBDD()
+#print(len(test.getBDD()))
