@@ -1,13 +1,11 @@
 from itertools import count
 from operator import truediv
 from tokenize import String
-
-
-from cv2 import repeat
+from ExempleBDD import ExempleBDD
+from TraitementDeDonnees import TraitementDeDonnees
+#from cv2 import repeat
 import random
-
 import Cout
-import TraitementDeDonnees
 
 
 class Chromosome:
@@ -41,8 +39,8 @@ class Chromosome:
         return self.alpha
 
     def getBeta(self):
-        return self.beta
-    
+        return self.beta   
+        
     def getValide(self):
         return self.valide
 
@@ -51,7 +49,7 @@ class Chromosome:
 
     def setTaille(self, taille):
         self.taille=taille
-    
+        
     def setCout(self, cout):
         self.cout=cout
 
@@ -104,8 +102,8 @@ class Chromosome:
             print("cout: "+self.cout, " indice: "+self.indice)
 
 
-    def cheromosomeAlea(self):
-        for i in self.taille:
+    def cheromosomeAlea(self): #err
+        for i in range(self.taille):
             while True:
                 nouveau=True
                 self.items[i]=str(random.randrange(1, TraitementDeDonnees.nbItems + 1))
@@ -137,7 +135,7 @@ class Chromosome:
             index+=1
         return False
 
-    
+        
     def contientConclusion(self, item):
         index=self.indice
         while(True):
@@ -183,6 +181,15 @@ class Chromosome:
                 return False
             if index==self.taille:
                 break
-            index+=1 
-        return True   
+            index+=1
+        return True
 
+
+#test
+t=TraitementDeDonnees()
+t.lireDonnees()
+print(t.nbTransactions)
+
+regle = Chromosome(3,0,0,0,2,0.1,0.1,False)
+#regle.cheromosomeAlea() #err
+#TraitementDeDonnees().calculFitnessCPU(regle,1,2) #mazal
