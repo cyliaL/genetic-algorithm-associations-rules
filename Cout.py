@@ -35,10 +35,10 @@ class cout:
 ###
 
 
-t1 = cout(10,20,30) # constructeur avec valeurs
+#t1 = cout(10,20,30) # constructeur avec valeurs
 
-print(t1.fitness,t1.support,t1.confiance) #les valeurs marchent 
-print(t1.getFitness,t1.getSupport,t1.getConfiance)#les getters marchent pas erreur
+#print(t1.fitness,t1.support,t1.confiance) #les valeurs marchent 
+#print(t1.getFitness,t1.getSupport,t1.getConfiance)#les getters marchent pas erreur
 
 
 
