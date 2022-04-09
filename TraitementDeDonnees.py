@@ -25,10 +25,10 @@ class TraitementDeDonnees:
             print(transaction) 
             TraitementDeDonnees.bdd.append(transaction)
 
-    def lireDonnees(self):
-        self.bdd = ExempleBDD().getBDD()
-        self.nbTransactions = len(self.bdd)
-        self.nbItems = 5
+    def lireDonnees():
+        TraitementDeDonnees.bdd = ExempleBDD().getBDD()
+        TraitementDeDonnees.nbTransactions = len(TraitementDeDonnees.bdd)
+        TraitementDeDonnees.nbItems = 5
 
     @staticmethod
     def calculFitnessCPU(regle, alpha, beta) :
