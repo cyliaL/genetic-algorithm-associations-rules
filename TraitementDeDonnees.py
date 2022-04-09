@@ -73,5 +73,9 @@ class TraitementDeDonnees:
         # #print("confiance : " ,confiance);
         stopTime = int(round(time.time() * 1000))
         elapsedTime = (stopTime - startTime)
-        TraitementDeDonnees.time = elapsedTime
+        TraitementDeDonnees.incTime(elapsedTime)
         return Cout(support,confiance, (alpha*support+beta*confiance)/(alpha+beta))
+
+    @staticmethod
+    def incTime(ti):
+        TraitementDeDonnees.time += ti
