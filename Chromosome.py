@@ -190,6 +190,6 @@ class Chromosome:
 TraitementDeDonnees.lireDonnees()
 regle = Chromosome(3,0,0,0,2,0.1,0.1,False)
 regle.cheromosomeAlea() #err
-print(regle.getItems())
-print(TraitementDeDonnees().calculFitnessCPU(regle,1,2).getFitness()) #mazal
+print("items : ",regle.getItems())
+print("fitness : ",TraitementDeDonnees().calculFitnessCPU(regle,1,2).getFitness) #mazal
 

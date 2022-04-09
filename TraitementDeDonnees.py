@@ -50,8 +50,10 @@ class TraitementDeDonnees:
                 while(k < len(TraitementDeDonnees.bdd[i]) ): #calculer le nombre d'items de la regle trouvés dans la transaction
                     if TraitementDeDonnees.bdd[i][k] == regle.getItems()[j]:
                         trouve += 1
+                         print("trouve = ",touve)
                         break
                     k += 1
+            print("fin for ")
             if (trouve == regle.getIndice()) : #tout les items de la partie antécédent sont trouvés
                 A += 1
                 cpt=0
