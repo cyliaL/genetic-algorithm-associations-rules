@@ -106,7 +106,7 @@ class Chromosome:
         for i in range(self.taille):
             while True:
                 nouveau=True
-                self.items[i]=str(random.randrange(1, TraitementDeDonnees.nbItems + 1))
+                self.items.append(str(random.randrange(1, TraitementDeDonnees.nbItems + 1)))
                 j=0
                 while j<i:
                     if(self.items[j]==self.items[i]):
@@ -115,6 +115,7 @@ class Chromosome:
                     j+=1
                 if(nouveau==False):
                     nouveau=True
+                break
 
     def contient(self, item):
         index=0
@@ -186,10 +187,9 @@ class Chromosome:
 
 
 #test
-t=TraitementDeDonnees()
-t.lireDonnees()
-print(t.nbTransactions)
-
+TraitementDeDonnees.lireDonnees()
 regle = Chromosome(3,0,0,0,2,0.1,0.1,False)
-#regle.cheromosomeAlea() #err
-#TraitementDeDonnees().calculFitnessCPU(regle,1,2) #mazal
+regle.cheromosomeAlea() #err
+print(regle.getItems())
+print(TraitementDeDonnees().calculFitnessCPU(regle,1,2).getFitness()) #mazal
+

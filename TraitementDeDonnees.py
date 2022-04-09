@@ -1,4 +1,4 @@
-import Cout
+from Cout import cout
 import time
 from ExempleBDD import ExempleBDD
 
@@ -29,13 +29,18 @@ class TraitementDeDonnees:
     def lireDonnees():
         TraitementDeDonnees.bdd = ExempleBDD().getBDD()
         TraitementDeDonnees.nbTransactions = len(TraitementDeDonnees.bdd)
-        TraitementDeDonnees.nbItems = 5
+        TraitementDeDonnees.nbItems = 6
+    
+    @staticmethod
+    def incTime(ti):
+        TraitementDeDonnees.time += ti
 
     @staticmethod
     def calculFitnessCPU(regle, alpha, beta) :
         AetB = 0 #nombre d'appaition de A et B
         A = 0    #nombbre d'appaition de d'un item antécédent 
         B=0      #nombre d'appaition de d'un item conclusion
+        cpt = 0
         startTime = int(round(time.time() * 1000)) #le temps en ms
         for i in range(TraitementDeDonnees.nbTransactions): #parcourir les transactions
             k = 0
@@ -61,7 +66,9 @@ class TraitementDeDonnees:
                         k += 1
                 if(trouve == regle.getTaille()) : AetB += 1
             if(cpt== (regle.getTaille()-regle.getIndice())): B += 1
-        if(A==0 or AetB==0) : return Cout(0,0,0)
+        if(A==0 or AetB==0) :
+            print("ikchem")
+            return cout(0,0,0)
         support = AetB / TraitementDeDonnees.nbTransactions
         # print("support : ",support)
         confiance = AetB / A
@@ -73,5 +80,5 @@ class TraitementDeDonnees:
         # #print("confiance : " ,confiance);
         stopTime = int(round(time.time() * 1000))
         elapsedTime = (stopTime - startTime)
-        TraitementDeDonnees.time = elapsedTime
-        return Cout(support,confiance, (alpha*support+beta*confiance)/(alpha+beta))
+        TraitementDeDonnees.incTime(elapsedTime)
+        return cout(support,confiance, (alpha*support+beta*confiance)/(alpha+beta))
