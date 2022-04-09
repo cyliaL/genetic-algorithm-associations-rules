@@ -25,6 +25,7 @@ class TraitementDeDonnees:
             print(transaction) 
             TraitementDeDonnees.bdd.append(transaction)
 
+    @staticmethod
     def lireDonnees():
         TraitementDeDonnees.bdd = ExempleBDD().getBDD()
         TraitementDeDonnees.nbTransactions = len(TraitementDeDonnees.bdd)
