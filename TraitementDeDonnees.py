@@ -45,24 +45,23 @@ class TraitementDeDonnees:
                 k=0
                 while(k < len(TraitementDeDonnees.bdd[i]) ): #calculer le nombre d'items de la regle trouvés dans la transaction
                     if TraitementDeDonnees.bdd[i][k] == regle.getItems()[j]:
-                        print("ikchem ar if")
                         trouve += 1
                         break
                     k += 1
-            if (trouve == regle.getIndice()) : #tout les items de la partie antécédent sont trouvés
-                A += 1
-                cpt=0
-                j=regle.getIndice()
-                for j in range(regle.getTaille()):
-                    k = 0
-                    while (k < len(TraitementDeDonnees.bdd[i])) :#rechercher la partie conséquence de la régle dans la transaction
-                        if (TraitementDeDonnees.bdd[i][k]==regle.getItems()[j]) :
-                            trouve += 1
-                            cpt += 1
-                            break
-                        k += 1
-                if(trouve == regle.getTaille()) : AetB += 1
+            if (trouve == regle.getIndice()) : A += 1
+            cpt=0
+            j=regle.getIndice()
+            for j in range(regle.getTaille()):
+                k = 0
+                while (k < len(TraitementDeDonnees.bdd[i])) :#rechercher la partie conséquence de la régle dans la transaction
+                    if (TraitementDeDonnees.bdd[i][k]==regle.getItems()[j]) :
+                        trouve += 1
+                        cpt += 1
+                        break
+                    k += 1
+            if(trouve == regle.getTaille()) : AetB += 1
             if(cpt== (regle.getTaille()-regle.getIndice())): B += 1
+        print("A=",A,"B=",B,"AetB=",AetB)
         if(A==0 or AetB==0) : return cout(0,0,0)
         support = AetB / TraitementDeDonnees.nbTransactions
         # print("support : ",support)

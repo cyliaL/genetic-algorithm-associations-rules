@@ -5,7 +5,7 @@ from ExempleBDD import ExempleBDD
 from TraitementDeDonnees import TraitementDeDonnees
 #from cv2 import repeat
 import random
-import Cout
+from Cout import cout
 
 
 class Chromosome:
@@ -192,4 +192,4 @@ TraitementDeDonnees.lireDonnees()
 regle = Chromosome(3,0,0,0,2,0.1,0.1,False)
 regle.cheromosomeAlea() 
 print("items : ",regle.getItems())
-print("fitness : ",TraitementDeDonnees().calculFitnessCPU(regle,1,2).getFitness) #mazal
+print("fitness : ",TraitementDeDonnees().calculFitnessCPU(regle,1,2).getFitness()) #mazal
