@@ -40,7 +40,7 @@ class Chromosome:
 
     def getBeta(self):
         return self.beta   
-        
+
     def getValide(self):
         return self.valide
 
@@ -106,15 +106,17 @@ class Chromosome:
         for i in range(self.taille):
             while True:
                 nouveau=True
-                self.items[i]=str(random.randrange(1, TraitementDeDonnees.nbItems + 1))
+                x=TraitementDeDonnees.nb_items +1
+                self.items.append(str(random.randrange(1, x)))
                 j=0
                 while j<i:
                     if(self.items[j]==self.items[i]):
                         nouveau=False
+                        self.items.pop()
                         break
                     j+=1
-                if(nouveau==False):
-                    nouveau=True
+                if(nouveau==True):
+                    break
 
     def contient(self, item):
         index=0
@@ -186,10 +188,8 @@ class Chromosome:
 
 
 #test
-t=TraitementDeDonnees()
-t.lireDonnees()
-print(t.nbTransactions)
-
+TraitementDeDonnees.lireDonneesBinaires('data/exempleBDD.csv')
 regle = Chromosome(3,0,0,0,2,0.1,0.1,False)
-#regle.cheromosomeAlea() #err
+#regle.afficherRegle(1)
+regle.cheromosomeAlea() #err
 #TraitementDeDonnees().calculFitnessCPU(regle,1,2) #mazal
