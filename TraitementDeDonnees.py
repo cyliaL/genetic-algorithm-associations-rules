@@ -48,34 +48,30 @@ class TraitementDeDonnees:
                         trouve += 1
                         break
                     k += 1
-            if (trouve == regle.getIndice()) : A += 1
+            if (trouve == regle.getIndice()) : A += 1 #tout les items antécédents sont trouvés
             cpt=0
-            j=regle.getIndice()
-            for j in range(regle.getTaille()):
+            for j in range(regle.getIndice(),regle.getTaille()):
                 k = 0
                 while (k < len(TraitementDeDonnees.bdd[i])) :#rechercher la partie conséquence de la régle dans la transaction
                     if (TraitementDeDonnees.bdd[i][k]==regle.getItems()[j]) :
                         trouve += 1
-                        cpt += 1
+                        cpt += 1 
                         break
                     k += 1
-            if(trouve == regle.getTaille()) : AetB += 1
-            if(cpt== (regle.getTaille()-regle.getIndice())): B += 1
-        print("A=",A,"B=",B,"AetB=",AetB)
+            if(trouve == regle.getTaille()) : AetB += 1 #tout les items antécédents et conclusion sont trouvés
+            if(cpt== (regle.getTaille()-regle.getIndice())): B += 1 #nombre d'apparition de la conclusion
+            print(A,B,AetB)
         if(A==0 or AetB==0) : return cout(0,0,0)
         support = AetB / TraitementDeDonnees.nbTransactions
-        # print("support : ",support)
         confiance = AetB / A
         #if (B==0):lift=0
         #else :
         # lift= (AetB * self.nbTransactions)/ (A* B)
         # if(lift <1): lift=1
-        # print("--> Lift : " ,lift)
-        # #print("confiance : " ,confiance);
         stopTime = int(round(time.time() * 1000))
         elapsedTime = (stopTime - startTime)
         TraitementDeDonnees.incTime(elapsedTime)
-        return cout(support,confiance, (alpha*support+beta*confiance)/(alpha+beta))
+        return cout((alpha*support+beta*confiance)/(alpha+beta),support,confiance)
 
     @staticmethod
     def incTime(ti):

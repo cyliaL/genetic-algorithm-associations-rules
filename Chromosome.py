@@ -189,7 +189,10 @@ class Chromosome:
 
 #test
 TraitementDeDonnees.lireDonnees()
-regle = Chromosome(3,0,0,0,2,0.1,0.1,False)
+regle = Chromosome(4,0,0,0,2,0.1,0.1,False)
 regle.cheromosomeAlea() 
 print("items : ",regle.getItems())
-print("fitness : ",TraitementDeDonnees().calculFitnessCPU(regle,1,2).getFitness()) #mazal
+t=TraitementDeDonnees().calculFitnessCPU(regle,0.1,0.1)
+print("fitness : ",t.getFitness()) #mazal
+print("support : ",t.getSupport())
+print("conf : ",t.getConfiance())
