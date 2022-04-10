@@ -89,7 +89,7 @@ class Chromosome:
 
 
     def calculerCoutRegle(self):
-        c= Cout(TraitementDeDonnees.calculFitnessCPU(self, self.alpha, self.beta))
+        c= cout(TraitementDeDonnees.calculFitnessCPU(self, self.alpha, self.beta))
         self.confiane=c.confiance
         self.support=c.support
         self.cout=c.cout
