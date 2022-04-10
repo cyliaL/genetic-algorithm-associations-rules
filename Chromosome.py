@@ -5,7 +5,7 @@ from ExempleBDD import ExempleBDD
 from TraitementDeDonnees import TraitementDeDonnees
 #from cv2 import repeat
 import random
-import Cout
+from Cout import cout
 
 
 class Chromosome:
@@ -106,7 +106,7 @@ class Chromosome:
         for i in range(self.taille):
             while True:
                 nouveau=True
-                x=TraitementDeDonnees.nb_items +1
+                x=TraitementDeDonnees.nbItems +1
                 self.items.append(str(random.randrange(1, x)))
                 j=0
                 while j<i:
@@ -188,8 +188,8 @@ class Chromosome:
 
 
 #test
-TraitementDeDonnees.lireDonneesBinaires('data/exempleBDD.csv')
+TraitementDeDonnees.lireDonnees()
 regle = Chromosome(3,0,0,0,2,0.1,0.1,False)
-#regle.afficherRegle(1)
-regle.cheromosomeAlea() #err
-#TraitementDeDonnees().calculFitnessCPU(regle,1,2) #mazal
+regle.cheromosomeAlea() 
+print("items : ",regle.getItems())
+print("fitness : ",TraitementDeDonnees().calculFitnessCPU(regle,1,2).getFitness()) #mazal
