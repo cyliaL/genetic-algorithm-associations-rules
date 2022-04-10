@@ -117,13 +117,13 @@ class AG:
 
 
 #petit probleme de constructeur dans Chromosome a régler aprés on peut mettre les valeur de init == o
-    #def trierPop(self):
-    #    for i in range(1,self.taillePop):
-    #        for j in range(self.taillePop-i):
-    #            if( self.population[j].getCout()>self.population[j+1].getCout()):
-    #                save = Chromosome(self.population[j].getTaille(),self.population[j].getCout(),self.population[j].getSupport(),self.population[j].getConfiance(),self.population[j].getIndice(),self.population[j].getAlpha(),self.population[j].getBeta(),self.population[j].getValide())
-    #                self.population[j]= new Chromosome(population[j+1]);
-	#			    self.population[j+1]=new Chromosome(save);
+    def trierPop(self):
+        for i in range(1,self.taillePop):
+            for j in range(self.taillePop-i):
+                if( self.population[j].getCout()>self.population[j+1].getCout()):
+                    save = Chromosome(self.population[j].getTaille(),self.population[j].getCout(),self.population[j].getSupport(),self.population[j].getConfiance(),self.population[j].getIndice(),self.population[j].getAlpha(),self.population[j].getBeta(),self.population[j].getValide())
+                    self.population.insert(j,Chromosome(self.population[j+1].getTaille(),self.population[j+1].getCout(),self.population[j+1].getSupport(),self.population[j+1].getConfiance(),self.population[j+1].getIndice(),self.population[j+1].getAlpha(),self.population[j+1].getBeta(),self.population[j+1].getValide()))
+                    self.population.insert(j+1,save)
 		
 
 
