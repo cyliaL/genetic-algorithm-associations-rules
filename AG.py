@@ -3,6 +3,7 @@ from xmlrpc.client import boolean
 from numpy import append
 from Chromosome import Chromosome
 import random
+from TraitementDeDonnees import TraitementDeDonnees
 
 
 class AG:
@@ -25,28 +26,33 @@ class AG:
         self.TypeExec = TypeExec
 
         for i in range(self.taillePop):
-            nouveau=True
-            while(nouveau):
-                nouveau=True
+            nouveau=False
+            while(not nouveau):
+                #print("hhh")
+                nouveau=False
                 t=random.randrange(2, self.tailleMaxChromosome+1)
-                c=Chromosome(t,0,0,0,0,alpha,beta,None)
+                c=Chromosome(t,0,0,0,0,alpha,beta,False)
                 ind=random.randrange(1, t)
                 if(michigan):
                     c.setIndice(t-1)
                 else:
                     c.setIndice(ind)
                 
+                print("taille: "+str(c.getTaille()))
+                print("indice: "+str(c.getIndice()))
+                
                 c.chromosomeAlea()
 
                 if i==0:
                     self.population.append(c)
+                    break
                 else:
                     for x in self.population:
-                        if x.equals(c)==True:
-                            nouveau=False
-                            break
-                        else:
+                        if x.equals(c)!=True:
                             self.population.append(c)
+                            nouveau=True
+                            break
+                            
 
     def calculCoutPop(self):
         for i in range(self.taillePop):
@@ -67,11 +73,18 @@ class AG:
         self.afficherPop() #population finale
         self.AfficherReglesValide()
         self.stats()
+
+
+
+        def croisement(self):
+            #selection
+            self.trierPop()
+
         
 
     def afficherPop(self):
         for i in range(self.taillePop):
-            self.population[i].afficherRegle(self.population[i].getIndice())
+            self.population[i].afficherRegle()
 
     def AfficherReglesValide(self):
         print("----------Les Regles valides----------")
@@ -122,10 +135,22 @@ class AG:
             for j in range(self.taillePop-i):
                 if( self.population[j].getCout()>self.population[j+1].getCout()):
                     save = Chromosome(self.population[j].getTaille(),self.population[j].getCout(),self.population[j].getSupport(),self.population[j].getConfiance(),self.population[j].getIndice(),self.population[j].getAlpha(),self.population[j].getBeta(),self.population[j].getValide())
-                    self.population.insert(j,Chromosome(self.population[j+1].getTaille(),self.population[j+1].getCout(),self.population[j+1].getSupport(),self.population[j+1].getConfiance(),self.population[j+1].getIndice(),self.population[j+1].getAlpha(),self.population[j+1].getBeta(),self.population[j+1].getValide()))
-                    self.population.insert(j+1,save)
+                    self.population[j]=Chromosome(self.population[j+1].getTaille(),self.population[j+1].getCout(),self.population[j+1].getSupport(),self.population[j+1].getConfiance(),self.population[j+1].getIndice(),self.population[j+1].getAlpha(),self.population[j+1].getBeta(),self.population[j+1].getValide())
+                    self.population[j+1]=save
 		
 
+
+TraitementDeDonnees.lireDonnees()
+ag=AG(3,3,0.4,0.4,0.9,0.1,5,0.3,0.6,True,1,1,1)
+ag.afficherPop()
+
+'''r1 = Chromosome(4,0,0,0,2,0.1,0.1,False)
+r1.chromosomeAlea()
+
+r2=Chromosome(4,0,0,0,2,0.1,0.1,False)
+r2.chromosomeAlea()
+
+print(r2.equals(r1))'''
 
 
 

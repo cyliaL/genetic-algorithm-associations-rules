@@ -80,12 +80,9 @@ class Chromosome:
         self.alpha=c.alpha
         self.beta=c.beta
         self.valide=c.valide
-        i=0
-        while(True):
-            self.items[i]=c.getItems()[i]
-            if(i==self.taille):
-                break
-            i+=1
+
+        for i in range(c.taille):
+            self.items.append(c.getItems()[i])
 
 
     def calculerCoutRegle(self):
@@ -94,20 +91,21 @@ class Chromosome:
         self.support=c.support
         self.cout=c.cout
 
-    def afficherRegle(self, k):
-        if(self.cout != 0):
-            print(" R�gle "+(int)(k+1)+" : ")
+    def afficherRegle(self):
+        if(self.cout == 0):
+            print(" Règle : ")
             for item in self.items:
                 print("  " + item)
-            print("cout: "+self.cout, " indice: "+self.indice)
+            print("cout: "+str(self.cout), " indice: "+str(self.indice))
 
 
-    def cheromosomeAlea(self): #err
+    def chromosomeAlea(self): #err
         for i in range(self.taille):
             while True:
                 nouveau=True
                 x=TraitementDeDonnees.nbItems +1
                 self.items.append(str(random.randrange(1, x)))
+                
                 j=0
                 while j<i:
                     if(self.items[j]==self.items[i]):
@@ -128,24 +126,16 @@ class Chromosome:
         return False
 
     def contientAntecedants(self, item):
-        index=0
-        while(True):
-            if self.items[index]==item:
+        for i in range(self.indice):
+            if self.items[i]==item:
                 return True
-            if index==self.indice:
-                break
-            index+=1
         return False
 
         
     def contientConclusion(self, item):
-        index=self.indice
-        while(True):
-            if self.items[index]==item:
+        for i in range(self.indice, self.taille):
+            if self.items[i]==item:
                 return True
-            if index==self.taille:
-                break
-            index+=1
         return False
 
     def redondante(self,c):
@@ -170,29 +160,23 @@ class Chromosome:
     def equals(self,c):
         if(self.indice!= c.getIndice()):
             return False
-        index=0
-        while(True):
-            if not self.contientAntecedents(c.getItems()[index]):
+        for i in range(self.indice):
+            if not self.contientAntecedants(c.getItems()[i]):
                 return False
-            if index==self.indice:
-                break
-            index+=1
 
-        while(True):
-            if not self.contientConclusion(c.getItems()[index]):
+        for i in range(self.indice,self.taille):
+            if not self.contientConclusion(c.getItems()[i]):
                 return False
-            if index==self.taille:
-                break
-            index+=1
+
         return True
 
 
 #test
-TraitementDeDonnees.lireDonnees()
+'''TraitementDeDonnees.lireDonnees()
 regle = Chromosome(4,0,0,0,2,0.1,0.1,False)
-regle.cheromosomeAlea() 
+regle.chromosomeAlea() 
 print("items : ",regle.getItems())
 t=TraitementDeDonnees().calculFitnessCPU(regle,0.1,0.1)
 print("fitness : ",t.getFitness()) #mazal
 print("support : ",t.getSupport())
-print("conf : ",t.getConfiance())
+print("conf : ",t.getConfiance())'''
