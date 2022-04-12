@@ -70,6 +70,9 @@ class Chromosome:
 
     def setValide(self, valide):
         self.valide=valide
+    
+    def setItem(self,item,position):
+        self.items[position]=item
 
     def copyChromosome(self,c):
         self.taille=c.taille
