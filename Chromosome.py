@@ -191,11 +191,11 @@ class Chromosome:
 
 
 #test
-TraitementDeDonnees.lireDonnees()
-regle = Chromosome(4,0,0,0,2,0.1,0.1,False)
-regle.cheromosomeAlea() 
-print("items : ",regle.getItems())
-t=TraitementDeDonnees().calculFitnessCPU(regle,0.1,0.1)
-print("fitness : ",t.getFitness()) #mazal
-print("support : ",t.getSupport())
-print("conf : ",t.getConfiance())
+#TraitementDeDonnees.lireDonnees()
+#regle = Chromosome(4,0,0,0,2,0.1,0.1,False)
+#regle.cheromosomeAlea() 
+#print("items : ",regle.getItems())
+#t=TraitementDeDonnees().calculFitnessCPU(regle,0.1,0.1)
+#print("fitness : ",t.getFitness()) #mazal
+#print("support : ",t.getSupport())
+#print("conf : ",t.getConfiance())
