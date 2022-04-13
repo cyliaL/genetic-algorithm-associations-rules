@@ -70,6 +70,9 @@ class Chromosome:
 
     def setValide(self, valide):
         self.valide=valide
+    
+    def setItem(self, item,indice):
+        self.items[indice]=item
 
     def copyChromosome(self,c):
         self.taille=c.taille
@@ -92,11 +95,8 @@ class Chromosome:
         self.cout=c.cout
 
     def afficherRegle(self):
-        if(self.cout == 0):
-            print(" Règle : ")
-            for item in self.items:
-                print("  " + item)
-            print("cout: "+str(self.cout), " indice: "+str(self.indice))
+        print(" Items :  ",self.items,"/ indice",self.indice)
+        print("fitness = ",self.cout, " support =",self.support," confiance =",self.confiance)
 
 
     def chromosomeAlea(self): #err
@@ -116,14 +116,10 @@ class Chromosome:
                 if(nouveau==True):
                     break
 
-    def contient(self, item):
-        index=0
-        while(True):
-            if self.items[index]==item:
-                return True
-            if index==self.taille:
-                break
-        return False
+    def contient(self, item):#err
+        if item in self.items:
+            return True
+        else :  return False
 
     def contientAntecedants(self, item):
         for i in range(self.indice):
@@ -175,6 +171,16 @@ class Chromosome:
 '''TraitementDeDonnees.lireDonnees()
 regle = Chromosome(4,0,0,0,2,0.1,0.1,False)
 regle.chromosomeAlea() 
+print("items : ",regle.getItems())
+r2=Chromosome(4,0,0,0,2,0.1,0.1,False)
+r2.chromosomeAlea()
+print("items : ",r2.getItems())
+print(regle.equals(r2))'''
+
+'''print("items : ",regle.getItems())
+v="10"
+print(regle.contient(v))
+regle.setItem(v,0)
 print("items : ",regle.getItems())
 t=TraitementDeDonnees().calculFitnessCPU(regle,0.1,0.1)
 print("fitness : ",t.getFitness()) #mazal
