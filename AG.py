@@ -37,11 +37,11 @@ class AG:
                     c.setIndice(t-1)
                 else:
                     c.setIndice(ind)
-                
-                print("taille: "+str(c.getTaille()))
-                print("indice: "+str(c.getIndice()))
-                
                 c.chromosomeAlea()
+                calcul = TraitementDeDonnees.calculFitnessCPU(c,self.alpha,self.beta)
+                c.setCout(calcul.getFitness())
+                c.setConfiance(calcul.getConfiance())
+                c.setSupport(calcul.getSupport())
 
                 if i==0:
                     self.population.append(c)
@@ -76,14 +76,15 @@ class AG:
 
 
 
-        def croisement(self):
-            #selection
-            self.trierPop()
+    def croisement(self):
+        #selection
+        self.trierPop()
 
         
 
     def afficherPop(self):
         for i in range(self.taillePop):
+            print("**************** régle ",i,"****************")
             self.population[i].afficherRegle()
 
     def AfficherReglesValide(self):
@@ -139,18 +140,43 @@ class AG:
                     self.population[j+1]=save
 		
 
+    def mutation(self):
+        for j in range(self.taillePop):
+            d=random.uniform(0, 1)
+            if(d<self.pm):
+                while True:
+                    mut = Chromosome(self.population[j].getTaille(),self.population[j].getCout(),self.population[j].getSupport(),self.population[j].getConfiance(),self.population[j].getIndice(),self.population[j].getAlpha(),self.population[j].getBeta(),self.population[j].getValide())
+                    mut.items = self.population[j].getItems()
+                    indice = random.randint(0,mut.getTaille()-1)
+                    while True:
+                        val = str(random.randint(1, TraitementDeDonnees.nbItems + 1))
+                        if(mut.contient(val) is False):
+                            break
+                    mut.getItems()[indice] = val
+                    if(mut not in self.population):
+                        break
+                self.population[j]=mut
+                c=TraitementDeDonnees.calculFitnessCPU(self.population[j],self.alpha,self.beta)
+                self.population[j].setCout(c.getFitness())
+                self.population[j].setSupport(c.getSupport())
+                self.population[j].setConfiance(c.getConfiance())
+
+
+
+    def contientRegle(self,c):
+        for i in range(self.taillePop):
+            if(self.population[i].equals(c)): return True
+        return False
+
+
 
 TraitementDeDonnees.lireDonnees()
-ag=AG(3,3,0.4,0.4,0.9,0.1,5,0.3,0.6,True,1,1,1)
+ag=AG(3,5,0.4,0.4,0.9,0.5,5,0.3,0.6,True,1,1,0)
+ag.afficherPop()
+ag.mutation()
+print("----------------------------------------")
 ag.afficherPop()
 
-'''r1 = Chromosome(4,0,0,0,2,0.1,0.1,False)
-r1.chromosomeAlea()
-
-r2=Chromosome(4,0,0,0,2,0.1,0.1,False)
-r2.chromosomeAlea()
-
-print(r2.equals(r1))'''
 
 
 
