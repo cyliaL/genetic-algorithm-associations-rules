@@ -86,17 +86,16 @@ class Chromosome:
 
 
     def calculerCoutRegle(self):
-        c= cout(TraitementDeDonnees.calculFitnessCPU(self, self.alpha, self.beta))
+        c= TraitementDeDonnees.calculFitnessCPU(self, self.alpha, self.beta)
         self.confiane=c.confiance
         self.support=c.support
-        self.cout=c.cout
+        self.cout=c.fitness
 
     def afficherRegle(self):
-        if(self.cout == 0):
-            print(" Règle : ")
-            for item in self.items:
-                print("  " + item)
-            print("cout: "+str(self.cout), " indice: "+str(self.indice))
+        print(" Règle : ")
+        for item in self.items:
+            print("  " + item)
+        print("cout: "+str(self.cout), " indice: "+str(self.indice))
 
 
     def chromosomeAlea(self): #err
@@ -117,12 +116,9 @@ class Chromosome:
                     break
 
     def contient(self, item):
-        index=0
-        while(True):
-            if self.items[index]==item:
+        for i in range(self.taille):
+            if self.items[i]==item:
                 return True
-            if index==self.taille:
-                break
         return False
 
     def contientAntecedants(self, item):
@@ -172,9 +168,17 @@ class Chromosome:
 
 
 #test
-'''TraitementDeDonnees.lireDonnees()
-regle = Chromosome(4,0,0,0,2,0.1,0.1,False)
-regle.chromosomeAlea() 
+'''tab=[]
+TraitementDeDonnees.lireDonnees()
+regle1 = Chromosome(4,0,0,0,2,0.1,0.1,False)
+regle1.chromosomeAlea() 
+regle2=Chromosome(5,0,0,0,2,0.1,0.1,False)
+regle2.chromosomeAlea()
+tab[0]=regle1
+tab[0]=regle2
+tab[0].afficherRegle()
+
+
 print("items : ",regle.getItems())
 t=TraitementDeDonnees().calculFitnessCPU(regle,0.1,0.1)
 print("fitness : ",t.getFitness()) #mazal

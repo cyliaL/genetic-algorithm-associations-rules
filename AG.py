@@ -1,15 +1,19 @@
+import math
 from xmlrpc.client import boolean
+from cv2 import sort
 
 from numpy import append
+from regex import P
 from Chromosome import Chromosome
 import random
+from Cout import cout
 from TraitementDeDonnees import TraitementDeDonnees
 
 
 class AG:
 
     def __init__(self, nbIteration, taillePop, alpha, beta, pc, pm,  tailleMaxChromosome, minsup, minconf, 
-    michigan ,typeCroisement, typeRemplacement, TypeExec) -> None:
+    michigan ,typeCroisement, typeRemplacement, TypeExec):
         self.nbIterations=nbIteration
         self.taillePop=taillePop
         self.alpha=alpha
@@ -26,10 +30,9 @@ class AG:
         self.TypeExec = TypeExec
 
         for i in range(self.taillePop):
-            nouveau=False
-            while(not nouveau):
+            while(True):
                 #print("hhh")
-                nouveau=False
+                nouveau=True
                 t=random.randrange(2, self.tailleMaxChromosome+1)
                 c=Chromosome(t,0,0,0,0,alpha,beta,False)
                 ind=random.randrange(1, t)
@@ -38,20 +41,20 @@ class AG:
                 else:
                     c.setIndice(ind)
                 
-                print("taille: "+str(c.getTaille()))
-                print("indice: "+str(c.getIndice()))
+                #print("taille: "+str(c.getTaille()))
+                #print("indice: "+str(c.getIndice()))
                 
                 c.chromosomeAlea()
 
-                if i==0:
+                for x in self.population:
+                    if x.equals(c):
+                        nouveau=False
+                        break
+
+                if(nouveau==True):
                     self.population.append(c)
                     break
-                else:
-                    for x in self.population:
-                        if x.equals(c)!=True:
-                            self.population.append(c)
-                            nouveau=True
-                            break
+                
                             
 
     def calculCoutPop(self):
@@ -76,15 +79,118 @@ class AG:
 
 
 
-        def croisement(self):
-            #selection
-            self.trierPop()
+    def croisement(self):
+        #selection
+        self.trierPop()
+        #print("yess")
+        paires=[]
+        indice=0
+        utilisees=set()
+        for j in range(self.taillePop):
+            while(True):
+                rand=random.random()
+                indice+=1
+                if(indice==self.taillePop):
+                    indice=0
+                while (indice in utilisees):
+                    indice+=1
+                    if indice==self.taillePop:
+                        indice=0
+                if(rand<=0.5):
+                    break
+            paires.append(indice)
+            utilisees.add(indice)
+
+        #print(paires)
+
+        if(len(paires)%2==1):
+            fin=len(paires)-1
+        else:
+            fin=len(paires)
+        
+        #croisement
+        for j in range(0, fin-1,2):
+            if(random.random()<self.pc):
+                ef1=Chromosome(self.population[paires[j]].getTaille(),0,0,0,self.population[paires[j]].getIndice(),self.alpha,self.beta,False)
+                ef2=Chromosome(self.population[paires[j+1]].getTaille(),0,0,0,self.population[paires[j+1]].getIndice(),self.alpha,self.beta,False)
+                minimum=min(ef1.getTaille(),ef2.getTaille())
+                
+                if self.typeCroisement==0:
+                    #print("hhhh")
+                    point=random.randrange(1,minimum)
+                    #print(point,minimum,ef1.getTaille(),ef2.getTaille())
+                    for k in range(point):
+                        ef1.getItems().append(self.population[paires[j]].getItems()[k])
+                        ef2.getItems().append(self.population[paires[j+1]].getItems()[k])
+                    for k in range(point,minimum):
+                        if (not self.population[paires[j]].contient(self.population[paires[j+1]].getItems()[k])) and (not self.population[paires[j+1]].contient(self.population[paires[j]].getItems()[k])):
+                            #print("jjjj")
+                            ef1.getItems().append(self.population[paires[j+1]].getItems()[k])
+                            ef2.getItems().append(self.population[paires[j]].getItems()[k])
+                        else:
+                            ef1.getItems() .append(self.population[paires[j]].getItems()[k])
+                            ef2.getItems().append(self.population[paires[j+1]].getItems()[k])
+                    
+                   
+                        
+                    for k in range(minimum,ef1.getTaille(),1):
+                        ef1.getItems().append(self.population[paires[j]].getItems()[k])   
+
+                    for k in range(minimum,ef2.getTaille(),1):
+                        ef2.getItems().append(self.population[paires[j+1]].getItems()[k])   
+
+
+                    if self.TypeExec==0:
+                        c1=TraitementDeDonnees.calculFitnessCPU(ef1,self.alpha,self.beta)
+                        c2=TraitementDeDonnees.calculFitnessCPU(ef2,self.alpha,self.beta)
+                    
+                    ef1.setCout(c1.getFitness())
+                    ef1.setSupport(c1.getSupport())
+                    ef1.setConfiance(c1.getConfiance())
+                    ef2.setCout(c2.getFitness())
+                    ef2.setConfiance(c2.getConfiance())
+                    ef2.setSupport(c2.getSupport())
+
+                    #========================> remplacement des parents
+                    remplace=0
+                    if (not self.contientRegle(ef1)):
+                        if ef1.getCout()> self.population[paires[j]].getCout():
+                            self.population[paires[j]]= ef1
+                            remplace=1
+                        else: 
+                            if ef1.getCout()> self.population[paires[j+1]].getCout():
+                                self.population[paires[j+1]]= ef1
+                                remplace=2
+                    
+                    if not self.contientRegle(ef2):
+                        if remplace ==0  and ef2.cout> self.population[paires[j]].getCout():
+                            self.population[paires[j]]= ef2
+                        else: 
+                            if remplace ==0  and ef2.cout> self.population[paires[j+1]].getCout():
+                                self.population[paires[j+1]]= ef2
+                            else: 
+                                if remplace ==1  and ef2.cout> self.population[paires[j+1]].getCout():
+                                    self.population[paires[j+1]]= ef2
+                                else: 
+                                    if remplace ==2  and ef2.cout> self.population[paires[j]].getCout():
+                                        self.population[paires[j]]= ef2
+
+
+    def contientRegle(self,c):
+        for i in range(self.taillePop):
+            if self.population[i].equals(c):
+                return True
+        return False
+        
+
+
+            
 
         
 
     def afficherPop(self):
-        for i in range(self.taillePop):
-            self.population[i].afficherRegle()
+        for x in self.population:
+            x.afficherRegle()
 
     def AfficherReglesValide(self):
         print("----------Les Regles valides----------")
@@ -134,23 +240,20 @@ class AG:
         for i in range(1,self.taillePop):
             for j in range(self.taillePop-i):
                 if( self.population[j].getCout()>self.population[j+1].getCout()):
-                    save = Chromosome(self.population[j].getTaille(),self.population[j].getCout(),self.population[j].getSupport(),self.population[j].getConfiance(),self.population[j].getIndice(),self.population[j].getAlpha(),self.population[j].getBeta(),self.population[j].getValide())
-                    self.population[j]=Chromosome(self.population[j+1].getTaille(),self.population[j+1].getCout(),self.population[j+1].getSupport(),self.population[j+1].getConfiance(),self.population[j+1].getIndice(),self.population[j+1].getAlpha(),self.population[j+1].getBeta(),self.population[j+1].getValide())
+                    save = self.population[j]
+                    self.population[j]=self.population[j+1]
                     self.population[j+1]=save
 		
 
 
 TraitementDeDonnees.lireDonnees()
-ag=AG(3,3,0.4,0.4,0.9,0.1,5,0.3,0.6,True,1,1,1)
+ag=AG(3,3,0.4,0.4,0.9,0.1,9,0.3,0.6,True,0,0,0)
+ag.calculCoutPop()
+ag.afficherPop()
+print("************************************************")
+ag.croisement()
 ag.afficherPop()
 
-'''r1 = Chromosome(4,0,0,0,2,0.1,0.1,False)
-r1.chromosomeAlea()
-
-r2=Chromosome(4,0,0,0,2,0.1,0.1,False)
-r2.chromosomeAlea()
-
-print(r2.equals(r1))'''
 
 
 
