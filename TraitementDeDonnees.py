@@ -61,6 +61,7 @@ class TraitementDeDonnees:
             if(trouve == regle.getTaille()) : AetB += 1 #tout les items antécédents et conclusion sont trouvés
             if(cpt== (regle.getTaille()-regle.getIndice())): B += 1 #nombre d'apparition de la conclusion
             #print(A,B,AetB)
+
         if(A==0 or AetB==0) : return cout(0,0,0)
         support = AetB / TraitementDeDonnees.nbTransactions
         confiance = AetB / A
