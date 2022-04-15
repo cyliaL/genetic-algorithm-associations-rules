@@ -256,8 +256,8 @@ class AG:
 
 
 TraitementDeDonnees.lireDonnees()
-ag=AG(3,3,0.4,0.4,0.9,0.1,9,0.3,0.6,True,0,0,0)
-ag.lancerAlgoGen()
+#ag=AG(3,3,0.4,0.4,0.9,0.1,9,0.3,0.6,True,0,0,0)
+#ag.lancerAlgoGen()
 
 
 
