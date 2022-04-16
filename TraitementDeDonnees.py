@@ -6,12 +6,12 @@ class TraitementDeDonnees:
     time=0
     nbTransactions=0
     nbItems=0
-    totalItems=0
+    totalItems=[]
     bdd=[]
 
     @staticmethod
     def lireDonneesBinaires(path):
-        with open(path, 'r') as file:
+        '''with open(path, 'r') as file:
             data = file.read().splitlines()
             TraitementDeDonnees.nb_transactions, TraitementDeDonnees.total_items, TraitementDeDonnees.nb_items, transactions= int(data[0]), int(data[1]),int(data[2]), data[3:]
             #print(TraitementDeDonnees.nb_transactions)
@@ -19,11 +19,22 @@ class TraitementDeDonnees:
             #print(TraitementDeDonnees.nb_items)
             #print(transactions)
         inter=list(transactions)
-
         for i in range(0, len(inter)):
             transaction=inter[i].split(',')
             #print(transaction) 
-            TraitementDeDonnees.bdd.append(transaction)
+            TraitementDeDonnees.bdd.append(transaction)'''
+        with open(path, "r") as file:
+            for line in file:
+                transaction = []
+                TraitementDeDonnees.nbTransactions += 1
+                for word in line.split():
+                    transaction.append(word)
+                    if word not in TraitementDeDonnees.totalItems:
+                        TraitementDeDonnees.totalItems.append(word)
+                TraitementDeDonnees.bdd.append(transaction)
+            TraitementDeDonnees.nbItems=len(TraitementDeDonnees.totalItems)    
+
+
 
     @staticmethod
     def lireDonnees():
@@ -77,3 +88,8 @@ class TraitementDeDonnees:
     @staticmethod
     def incTime(ti):
         TraitementDeDonnees.time += ti
+
+
+#TraitementDeDonnees.lireDonneesBinaires("data\DataSet1.txt")
+#print(TraitementDeDonnees.bdd)
+#print(TraitementDeDonnees.totalItems)

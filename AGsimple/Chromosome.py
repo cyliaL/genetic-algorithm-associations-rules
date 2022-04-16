@@ -103,8 +103,9 @@ class Chromosome:
         for i in range(self.taille):
             while True:
                 nouveau=True
-                x=TraitementDeDonnees.nbItems +1
-                self.items.append(str(random.randrange(1, x)))
+                print(TraitementDeDonnees.nbItems)
+                x=random.randrange(0, TraitementDeDonnees.nbItems,1)
+                self.items.append(TraitementDeDonnees.totalItems[x])
                 
                 j=0
                 while j<i:

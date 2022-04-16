@@ -184,7 +184,7 @@ class AG:
         for j in range(self.taillePop):
             if( self.population[j].getSupport() > self.minsup and self.population[j].getConfiance() > self.minconf):
                 self.population[j].setValide(True)
-                self.population[j].afficherRegle(self.population[j].getTaille())
+                self.population[j].afficherRegle()
             else : self.population[j].setValide(False)
 
     def stats(self):
@@ -241,7 +241,7 @@ class AG:
                     mut.items = self.population[j].getItems()
                     indice = random.randint(0,mut.getTaille()-1)
                     while True:
-                        val = str(random.randint(1, TraitementDeDonnees.nbItems + 1))
+                        val = TraitementDeDonnees.totalItems[random.randrange(0, TraitementDeDonnees.nbItems,1)]
                         if(mut.contient(val) is False):
                             break
                     mut.getItems()[indice] = val
@@ -255,9 +255,9 @@ class AG:
 
 
 
-TraitementDeDonnees.lireDonnees()
-#ag=AG(3,3,0.4,0.4,0.9,0.1,9,0.3,0.6,True,0,0,0)
-#ag.lancerAlgoGen()
+TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
+ag=AG(100,100,0.4,0.6,0.5,0.5,5,0.3,0.6,True,0,0,0)
+ag.lancerAlgoGen()
 
 
 
