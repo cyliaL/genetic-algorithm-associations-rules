@@ -42,10 +42,10 @@ class AG:
                     c.setIndice(ind)
 
                 c.chromosomeAlea()
-                calcul = TraitementDeDonnees.calculFitnessCPU(c,self.alpha,self.beta)
-                c.setCout(calcul.getFitness())
-                c.setConfiance(calcul.getConfiance())
-                c.setSupport(calcul.getSupport())
+                #calcul = TraitementDeDonnees.calculFitnessCPU(c,self.alpha,self.beta)
+                #c.setCout(calcul.getFitness())
+                #c.setConfiance(calcul.getConfiance())
+                #c.setSupport(calcul.getSupport())
 
                 for x in self.population:
                     if x.equals(c):
@@ -59,10 +59,16 @@ class AG:
                             
 
     def calculCoutPop(self):
-        for i in range(self.taillePop):
-            if(self.TypeExec==0) : self.population[i].calculerCoutRegle()
-            #elif(self.TypeExec==2) : self.population[i].calculerCoutRegleGPUDist()
-            #elif(self.TypeExec==4) : self.population[i].calculerCoutReglesurThreads()
+        if(self.TypeExec==0) : 
+            for r in self.population:
+                r.calculerCoutRegle()
+                #calcul=TraitementDeDonnees.calculFitnessCPU(r,self.alpha,self.beta)
+                #r.setCout(calcul.getFitness())
+                #r.setConfiance(calcul.getConfiance())
+                #r.setSupport(calcul.getSupport())
+
+        #elif(self.TypeExec==2) : self.population[i].calculerCoutRegleGPUDist()
+        #elif(self.TypeExec==4) : self.population[i].calculerCoutReglesurThreads()
 
     def lancerAlgoGen(self):
         if(self.TypeExec==0):
@@ -141,6 +147,7 @@ class AG:
                         ef2.setCout(c2.getFitness())
                         ef2.setConfiance(c2.getConfiance())
                         ef2.setSupport(c2.getSupport())
+                    
                     #======> remplacement des parents
                     remplace=0
                     #======> remplacement de la regle 1
