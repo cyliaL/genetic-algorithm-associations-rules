@@ -12,7 +12,7 @@ TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
 te = TransactionEncoder()
 te_ary = te.fit(TraitementDeDonnees.bdd).transform(TraitementDeDonnees.bdd)
 print(te_ary)
-te_ary.astype("int")
+te_ary.astype(int)
 print(te.columns_)
 pd.DataFrame(te_ary, columns=te.columns_)
 
