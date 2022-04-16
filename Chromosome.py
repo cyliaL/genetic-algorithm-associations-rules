@@ -20,6 +20,9 @@ class Chromosome:
         self.beta=beta
         self.valide=valide
 
+    def setItems(self, items):
+        self.items=items
+
     def getTaille(self):
         return self.taille
 
@@ -103,7 +106,7 @@ class Chromosome:
         for i in range(self.taille):
             while True:
                 nouveau=True
-                print(TraitementDeDonnees.nbItems)
+                #print(TraitementDeDonnees.nbItems)
                 x=random.randrange(0, TraitementDeDonnees.nbItems,1)
                 self.items.append(TraitementDeDonnees.totalItems[x])
                 
@@ -118,9 +121,10 @@ class Chromosome:
                     break
 
     def contient(self, item):#err
-        if item in self.items:
-            return True
-        else :  return False
+        for i in range(self.taille):
+            if self.items[i]==item:
+                return True
+        return False
 
 
     def contientAntecedants(self, item):

@@ -41,6 +41,8 @@ class TraitementDeDonnees:
         TraitementDeDonnees.bdd = ExempleBDD().getBDD()
         TraitementDeDonnees.nbTransactions = len(TraitementDeDonnees.bdd)
         TraitementDeDonnees.nbItems = 9
+        TraitementDeDonnees.totalItems=["1","2","3","4","5","6","7","8","9"]
+
 
     @staticmethod
     def calculFitnessCPU(regle, alpha, beta) :

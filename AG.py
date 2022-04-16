@@ -72,13 +72,11 @@ class AG:
 
     def lancerAlgoGen(self):
         if(self.TypeExec==0):
-            print("etape 0 ")
             self.calculCoutPop()
             self.afficherPop() # population initiale
             for i in range(self.nbIterations):
                 self.croisement()
                 self.mutation()
-                print("itération n° :",i)
         print("********************")
         self.afficherPop() #population finale
         self.AfficherReglesValide()
@@ -215,7 +213,7 @@ class AG:
                     if c.getItems()[k] not in items:
                         items.append(c.getItems()[k])
                         countItems += 1  
-        if(countRegles!=0): 
+        '''if(countRegles!=0): 
             moyTaille/= countRegles
             moyenne/= countRegles
             moySupp/= countRegles
@@ -225,7 +223,7 @@ class AG:
             print("Le support moyen est : " ,moySupp)
             print("La confiance moyenne est : " ,moyConf)
             print("Le nombre d'items utilisés : " ,countItems)
-            print(" la taille moyenne est de : ",moyTaille,"  le nombre de regles de taille 2: ",nb2)
+            print(" la taille moyenne est de : ",moyTaille,"  le nombre de regles de taille 2: ",nb2)'''
 
 
 
@@ -244,15 +242,18 @@ class AG:
             d=random.uniform(0, 1)
             if(d<self.pm):
                 while True:
+                    #print("gggg")
                     mut = Chromosome(self.population[j].getTaille(),self.population[j].getCout(),self.population[j].getSupport(),self.population[j].getConfiance(),self.population[j].getIndice(),self.population[j].getAlpha(),self.population[j].getBeta(),self.population[j].getValide())
-                    mut.items = self.population[j].getItems()
+                    for k in range(mut.getTaille()):
+                        mut.getItems().append(self.population[j].getItems()[k])
+                    #mut.items = self.population[j].getItems()
                     indice = random.randint(0,mut.getTaille()-1)
                     while True:
                         val = TraitementDeDonnees.totalItems[random.randrange(0, TraitementDeDonnees.nbItems,1)]
-                        if(mut.contient(val) is False):
+                        if(not mut.contient(val)):
                             break
                     mut.getItems()[indice] = val
-                    if(mut not in self.population):
+                    if(not self.contientRegle(mut)):
                         break
                 self.population[j]=mut
                 c=TraitementDeDonnees.calculFitnessCPU(self.population[j],self.alpha,self.beta)
@@ -262,9 +263,22 @@ class AG:
 
 
 
-TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
+#TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
+TraitementDeDonnees.lireDonnees()
 ag=AG(100,100,0.4,0.6,0.5,0.5,5,0.3,0.6,True,0,0,0)
 ag.lancerAlgoGen()
+
+'''c1=Chromosome(3,1,2,3,1,0.4,0.4,False)
+c1.setItems(["0","1","2"])
+
+c2=Chromosome(3,1,2,3,1,0.4,0.4,False)
+c2.setItems(["0","1","2"])
+
+l=[]
+l.append(c1)
+
+if(c1 in l):
+    print(True)'''
 
 
 
