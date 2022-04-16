@@ -61,7 +61,7 @@ class AG:
     def calculCoutPop(self):
         if(self.TypeExec==0) : 
             for r in self.population:
-                r.calculerCoutRegle()
+                r.calculerCoutRegleCPU()
                 #calcul=TraitementDeDonnees.calculFitnessCPU(r,self.alpha,self.beta)
                 #r.setCout(calcul.getFitness())
                 #r.setConfiance(calcul.getConfiance())

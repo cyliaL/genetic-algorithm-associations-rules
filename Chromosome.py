@@ -88,9 +88,9 @@ class Chromosome:
             self.items.append(c.getItems()[i])
 
 
-    def calculerCoutRegle(self):
+    def calculerCoutRegleCPU(self):
         c= TraitementDeDonnees.calculFitnessCPU(self, self.alpha, self.beta)
-        self.confiane=c.confiance
+        self.confiance=c.confiance
         self.support=c.support
         self.cout=c.fitness
 
