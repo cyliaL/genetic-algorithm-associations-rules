@@ -40,7 +40,7 @@ class TraitementDeDonnees:
     def lireDonnees():
         TraitementDeDonnees.bdd = ExempleBDD().getBDD()
         TraitementDeDonnees.nbTransactions = len(TraitementDeDonnees.bdd)
-        TraitementDeDonnees.nbItems = 9
+        TraitementDeDonnees.nbItems = 6
 
     @staticmethod
     def calculFitnessCPU(regle, alpha, beta) :
