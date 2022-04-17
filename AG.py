@@ -263,12 +263,12 @@ class AG:
 
 
 
-#TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
-TraitementDeDonnees.lireDonnees()
+'''TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
+#TraitementDeDonnees.lireDonnees()
 ag=AG(100,100,0.4,0.6,0.5,0.5,5,0.3,0.6,True,0,0,0)
 ag.lancerAlgoGen()
 
-'''c1=Chromosome(3,1,2,3,1,0.4,0.4,False)
+c1=Chromosome(3,1,2,3,1,0.4,0.4,False)
 c1.setItems(["0","1","2"])
 
 c2=Chromosome(3,1,2,3,1,0.4,0.4,False)
@@ -279,8 +279,20 @@ l.append(c1)
 
 if(c1 in l):
     print(True)'''
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.ensemble import RandomForestRegressor
+ 
+dataset = pd.read_csv('data/randomf.csv')
+x= dataset.iloc[:,0:12].values #les colones de 0 a 11
+y= dataset.iloc[:,12].values # la colonne fitnesse 12
+
+regressor = RandomForestRegressor(n_estimators = 10, random_state = 0)
+regressor.fit(x,y)
 
 
-
+y_pred=regressor.predict([[0,0,0,0,1,0,0,0,2,0,0,0]])
+print(y_pred)
 
     
