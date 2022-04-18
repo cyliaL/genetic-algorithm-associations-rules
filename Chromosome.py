@@ -19,12 +19,16 @@ class Chromosome:
         self.alpha=alpha
         self.beta=beta
         self.valide=valide
+        self.binary =[]
 
     def setItems(self, items):
         self.items=items
 
     def getTaille(self):
         return self.taille
+    
+    def getBinary(self):
+        return self.binary
 
     def getCout(self):
         return self.cout
@@ -172,14 +176,38 @@ class Chromosome:
                 return False
 
         return True
+    
+    def encoder(self):
+        for it in TraitementDeDonnees.totalItems:
+            i=0
+            while(i<self.taille):
+                print(self.items[i],it)
+                if i >= self.indice:
+                    if self.items[i]==it:
+                        self.binary.append(2)
+                        break
+                elif self.items[i]==it:
+                        self.binary.append(1)
+                        break  
+                i += 1
+            if i==self.taille:
+                self.binary.append(0)
 
 
 #test
-'''tab=[]
-TraitementDeDonnees.lireDonnees()
+#tab=[]
+TraitementDeDonnees.lireDonneesBinaires("data\DataSet1.txt")
+print("les items = ",TraitementDeDonnees.totalItems)
+print("--------------------------------------")
 regle1 = Chromosome(4,0,0,0,2,0.1,0.1,False)
 regle1.chromosomeAlea() 
-regle2=Chromosome(5,0,0,0,2,0.1,0.1,False)
+print("--------------------------------------")
+regle1.afficherRegle()
+print("--------------------------------------")
+regle1.encoder()
+print("binaire",regle1.binary)
+
+'''regle2=Chromosome(5,0,0,0,2,0.1,0.1,False)
 regle2.chromosomeAlea()
 tab[0]=regle1
 tab[0]=regle2
