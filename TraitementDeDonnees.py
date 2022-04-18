@@ -94,4 +94,5 @@ class TraitementDeDonnees:
 
 #TraitementDeDonnees.lireDonneesBinaires("data\DataSet1.txt")
 #print(TraitementDeDonnees.bdd)
+
 #print(TraitementDeDonnees.totalItems)
