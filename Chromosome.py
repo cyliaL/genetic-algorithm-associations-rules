@@ -19,12 +19,16 @@ class Chromosome:
         self.alpha=alpha
         self.beta=beta
         self.valide=valide
+        self.binary =[]
 
     def setItems(self, items):
         self.items=items
 
     def getTaille(self):
         return self.taille
+    
+    def getBinary(self):
+        return self.binary
 
     def getCout(self):
         return self.cout
@@ -172,6 +176,23 @@ class Chromosome:
                 return False
 
         return True
+    
+    def encoder(self):
+        for it in TraitementDeDonnees.totalItems:
+            i=0
+            while(i<self.taille):
+                if i >= self.indice:
+                    if self.items[i]==it:
+                        self.binary.append(2)
+                        break
+                elif self.items[i]==it:
+                        self.binary.append(1)
+                        break  
+                i += 1
+            if i==self.taille:
+                self.binary.append(0)
+        self.binary.append(self.indice)
+        self.binary.append(self.cout)
 
     def toList(self):
         l=self.items.copy()
@@ -181,36 +202,23 @@ class Chromosome:
 
 
 #test
-'''tab=[]
+#TraitementDeDonnees.lireDonneesBinaires("data\DataSet1.txt")
 TraitementDeDonnees.lireDonnees()
+print("total items = ",TraitementDeDonnees.totalItems)
+print("--------------------------------------")
 regle1 = Chromosome(4,0,0,0,2,0.1,0.1,False)
 regle1.chromosomeAlea() 
 regle2=Chromosome(5,0,0,0,2,0.1,0.1,False)
 regle2.chromosomeAlea()
-tab[0]=regle1
-tab[0]=regle2
-tab[0].afficherRegle()
-
-
-print("items : ",regle.getItems())'''
-
-TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
-r2=Chromosome(4,0,0,0,2,0.1,0.1,False)
-r2.chromosomeAlea()
-x=r2.toList()
-print(x)
 
 
 
-'''print("items : ",r2.getItems())
-print(regle.equals(r2))'''
-
-'''print("items : ",regle.getItems())
-v="10"
-print(regle.contient(v))
-regle.setItem(v,0)
-print("items : ",regle.getItems())
-t=TraitementDeDonnees().calculFitnessCPU(regle,0.1,0.1)
-print("fitness : ",t.getFitness()) #mazal
-print("support : ",t.getSupport())
-print("conf : ",t.getConfiance())'''
+f=TraitementDeDonnees.calculFitnessCPU(regle1,0.1,0.1)
+regle1.setCout(f.fitness)
+regle1.setSupport(f.support)
+regle1.setConfiance(f.confiance)
+print("--------------------------------------")
+regle1.afficherRegle()
+print("--------------------------------------")
+regle1.encoder()
+print("binaire [item1,item2...,indice,fitness ] = ",regle1.binary)
