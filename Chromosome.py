@@ -173,6 +173,12 @@ class Chromosome:
 
         return True
 
+    def toList(self):
+        l=self.items.copy()
+        l.append(self.indice)
+        l.append(self.cout)
+        return(l)
+
 
 #test
 '''tab=[]
@@ -186,10 +192,17 @@ tab[0]=regle2
 tab[0].afficherRegle()
 
 
-print("items : ",regle.getItems())
+print("items : ",regle.getItems())'''
+
+TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
 r2=Chromosome(4,0,0,0,2,0.1,0.1,False)
 r2.chromosomeAlea()
-print("items : ",r2.getItems())
+x=r2.toList()
+print(x)
+
+
+
+'''print("items : ",r2.getItems())
 print(regle.equals(r2))'''
 
 '''print("items : ",regle.getItems())

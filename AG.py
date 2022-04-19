@@ -1,4 +1,5 @@
 import math
+import csv
 from xmlrpc.client import boolean
 from cv2 import sort
 
@@ -79,8 +80,8 @@ class AG:
                 self.mutation()
         print("********************")
         self.afficherPop() #population finale
-        self.AfficherReglesValide()
-        self.stats()
+        #self.AfficherReglesValide()
+        #self.stats()
 
 
 
@@ -262,11 +263,21 @@ class AG:
                 self.population[j].setConfiance(c.getConfiance())
 
 
+    def saveDonnees(self):
+        with open("./results/results_AG_simple.csv", 'w') as file:
+            writer = csv.writer(file)
+            for r in self.population:
+                writer.writerow(r.toList())
+            
 
-#TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
-TraitementDeDonnees.lireDonnees()
+
+
+
+TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
+#TraitementDeDonnees.lireDonnees()
 ag=AG(100,100,0.4,0.6,0.5,0.5,5,0.3,0.6,True,0,0,0)
 ag.lancerAlgoGen()
+ag.saveDonnees()
 
 '''c1=Chromosome(3,1,2,3,1,0.4,0.4,False)
 c1.setItems(["0","1","2"])
