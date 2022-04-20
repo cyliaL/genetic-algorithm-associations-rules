@@ -2,7 +2,7 @@ import math
 import csv
 from xmlrpc.client import boolean
 from cv2 import sort
-
+import time
 from numpy import append
 from regex import P
 from Chromosome import Chromosome
@@ -29,6 +29,8 @@ class AG:
         self.typeRemplacement=typeRemplacement
         self.population=[]
         self.TypeExec = TypeExec
+        self.temps_encod = 0
+        self.temps_exec = 0
 
         for i in range(self.taillePop):
             while(True):
@@ -63,6 +65,10 @@ class AG:
         if(self.TypeExec==0) : 
             for r in self.population:
                 r.calculerCoutRegleCPU()
+                debut_encod = time.time()
+                r.encoder()
+                fin_encod = time.time()
+                self.temps_encod += (fin_encod - debut_encod) 
                 #calcul=TraitementDeDonnees.calculFitnessCPU(r,self.alpha,self.beta)
                 #r.setCout(calcul.getFitness())
                 #r.setConfiance(calcul.getConfiance())
@@ -72,12 +78,15 @@ class AG:
         #elif(self.TypeExec==4) : self.population[i].calculerCoutReglesurThreads()
 
     def lancerAlgoGen(self):
+        debut_exec = time.time()
         if(self.TypeExec==0):
-            self.calculCoutPop()
+            self.calculCoutPop()   
             self.afficherPop() # population initiale
             for i in range(self.nbIterations):
                 self.croisement()
                 self.mutation()
+        fin_exec = time.time()
+        self.temps_exec += (fin_exec - debut_exec)
         print("********************")
         self.afficherPop() #population finale
         #self.AfficherReglesValide()
@@ -146,6 +155,11 @@ class AG:
                         ef2.setCout(c2.getFitness())
                         ef2.setConfiance(c2.getConfiance())
                         ef2.setSupport(c2.getSupport())
+                        debut_encod = time.time()
+                        ef1.encoder()
+                        ef2.encoder()
+                        fin_encod = time.time()
+                        self.temps_encod += (fin_encod - debut_encod) 
                     
                     #======> remplacement des parents
                     remplace=0
@@ -196,7 +210,6 @@ class AG:
     def stats(self):
         countRegles=0
         countItems=0
-        nb2=0
         moyenne=0
         moyConf=0
         moySupp=0
@@ -206,7 +219,6 @@ class AG:
             if c.valide:
                 countRegles += 1
                 moyTaille += c.getTaille()
-                if(c.getTaille()==2) : nb2 += 1
                 moyenne += c.getCout()
                 moyConf+=c.getConfiance()
                 moySupp+= c.getSupport()
@@ -214,7 +226,7 @@ class AG:
                     if c.getItems()[k] not in items:
                         items.append(c.getItems()[k])
                         countItems += 1  
-        '''if(countRegles!=0): 
+        if(countRegles!=0): 
             moyTaille/= countRegles
             moyenne/= countRegles
             moySupp/= countRegles
@@ -224,11 +236,14 @@ class AG:
             print("Le support moyen est : " ,moySupp)
             print("La confiance moyenne est : " ,moyConf)
             print("Le nombre d'items utilisés : " ,countItems)
-            print(" la taille moyenne est de : ",moyTaille,"  le nombre de regles de taille 2: ",nb2)'''
+            print(" la taille moyenne est de : ",moyTaille)
+            print("le temps d'execution = ",self.temps_exec, "secondes")
+            print("le temps d'encodage = ",self.temps_encod, "secondes")
+            
 
 
 
-#petit probleme de constructeur dans Chromosome a régler aprés on peut mettre les valeur de init == o
+    #petit probleme de constructeur dans Chromosome a régler aprés on peut mettre les valeur de init == o
     def trierPop(self):
         for i in range(1,self.taillePop):
             for j in range(self.taillePop-i):
@@ -261,6 +276,11 @@ class AG:
                 self.population[j].setCout(c.getFitness())
                 self.population[j].setSupport(c.getSupport())
                 self.population[j].setConfiance(c.getConfiance())
+                debut_encod = time.time()
+                self.population[j].encoder()
+                fin_encod = time.time()
+                self.temps_encod += (fin_encod - debut_encod)
+                
 
 
     def saveDonnees(self):
@@ -274,10 +294,12 @@ class AG:
 
 
 
-'''TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
-#TraitementDeDonnees.lireDonnees()
+#TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
+TraitementDeDonnees.lireDonnees()
 ag=AG(100,100,0.4,0.6,0.5,0.5,5,0.3,0.6,True,0,0,0)
 ag.lancerAlgoGen()
+
+'''
 ag.saveDonnees()
 
 c1=Chromosome(3,1,2,3,1,0.4,0.4,False)
@@ -291,7 +313,7 @@ l.append(c1)
 
 if(c1 in l):
     print(True)'''
-import pandas as pd
+'''import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor
@@ -305,6 +327,5 @@ regressor.fit(x,y)
 
 
 y_pred=regressor.predict([[0,0,0,0,1,0,0,0,2,0,0,0]])
-print(y_pred)
-
+print(y_pred)'''
     

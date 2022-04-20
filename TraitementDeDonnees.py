@@ -1,5 +1,6 @@
 from Cout import cout
 import time
+from datetime import datetime
 from ExempleBDD import ExempleBDD
 
 class TraitementDeDonnees:
@@ -50,7 +51,7 @@ class TraitementDeDonnees:
         A = 0    #nombbre d'appaition de d'un item antécédent 
         B=0      #nombre d'appaition de d'un item conclusion
         cpt=0
-        startTime = int(round(time.time() * 1000)) #le temps en ms
+        startTime = time.time() #le temps en ms
         for i in range(TraitementDeDonnees.nbTransactions): #parcourir les transactions
             k = 0
             trouve = 0
@@ -82,7 +83,7 @@ class TraitementDeDonnees:
         #else :
         # lift= (AetB * self.nbTransactions)/ (A* B)
         # if(lift <1): lift=1
-        stopTime = int(round(time.time() * 1000))
+        stopTime = time.time()
         elapsedTime = (stopTime - startTime)
         TraitementDeDonnees.incTime(elapsedTime)
         return cout((alpha*support+beta*confiance)/(alpha+beta),support,confiance)

@@ -6,6 +6,7 @@ from TraitementDeDonnees import TraitementDeDonnees
 #from cv2 import repeat
 import random
 from Cout import cout
+from datetime import datetime
 
 
 class Chromosome:
@@ -104,6 +105,8 @@ class Chromosome:
     def afficherRegle(self):
         print(" Items :  ",self.items,"/ indice",self.indice)
         print("fitness = ",self.cout, " support =",self.support," confiance =",self.confiance)
+        print("codage binaire =",self.binary)
+        print("-----")
 
 
     def chromosomeAlea(self): #err
@@ -217,6 +220,7 @@ f=TraitementDeDonnees.calculFitnessCPU(regle1,0.1,0.1)
 regle1.setCout(f.fitness)
 regle1.setSupport(f.support)
 regle1.setConfiance(f.confiance)
+print('Duration: {}'.format(TraitementDeDonnees.time))
 print("--------------------------------------")
 regle1.afficherRegle()
 print("--------------------------------------")
