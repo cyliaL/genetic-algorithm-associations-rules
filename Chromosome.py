@@ -194,18 +194,11 @@ class Chromosome:
                 i += 1
             if i==self.taille:
                 self.binary.append(0)
-        self.binary.append(self.indice)
         self.binary.append(self.cout)
 
-    def toList(self):
-        l=self.items.copy()
-        l.append(self.indice)
-        l.append(self.cout)
-        return(l)
 
-
-#test
-#TraitementDeDonnees.lireDonneesBinaires("data\DataSet1.txt")
+'''test
+TraitementDeDonnees.lireDonneesBinaires("data\DataSet1.txt")
 TraitementDeDonnees.lireDonnees()
 print("total items = ",TraitementDeDonnees.totalItems)
 print("--------------------------------------")
@@ -225,4 +218,4 @@ print("--------------------------------------")
 regle1.afficherRegle()
 print("--------------------------------------")
 regle1.encoder()
-print("binaire [item1,item2...,indice,fitness ] = ",regle1.binary)
+print("binaire [item1,item2...,indice,fitness ] = ",regle1.binary)'''

@@ -9,11 +9,16 @@ data = [
     ['Angola', 1246700, 'AO', 'AGO']
 ]
 
-with open('countries.csv', 'w', encoding='UTF8', newline='') as f:
+'''with open('countries.csv', 'w', encoding='UTF8', newline='') as f:
     writer = csv.writer(f)
 
     # write the header
     writer.writerow(header)
 
     # write multiple rows
-    writer.writerows(data)
+    writer.writerows(data)'''
+
+a=[1,2]
+
+a.append(1)
+print(a)

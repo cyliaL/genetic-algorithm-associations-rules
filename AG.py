@@ -31,6 +31,7 @@ class AG:
         self.TypeExec = TypeExec
         self.temps_encod = 0
         self.temps_exec = 0
+        self.totalData=set()
 
         for i in range(self.taillePop):
             while(True):
@@ -65,10 +66,6 @@ class AG:
         if(self.TypeExec==0) : 
             for r in self.population:
                 r.calculerCoutRegleCPU()
-                debut_encod = time.time()
-                r.encoder()
-                fin_encod = time.time()
-                self.temps_encod += (fin_encod - debut_encod) 
                 #calcul=TraitementDeDonnees.calculFitnessCPU(r,self.alpha,self.beta)
                 #r.setCout(calcul.getFitness())
                 #r.setConfiance(calcul.getConfiance())
@@ -79,16 +76,17 @@ class AG:
 
     def lancerAlgoGen(self):
         debut_exec = time.time()
+       
         if(self.TypeExec==0):
             self.calculCoutPop()   
-            self.afficherPop() # population initiale
+            #self.afficherPop() # population initiale
             for i in range(self.nbIterations):
+                self.totalData.update(set(self.population))
                 self.croisement()
                 self.mutation()
+        self.totalData.update(set(self.population))
         fin_exec = time.time()
         self.temps_exec += (fin_exec - debut_exec)
-        print("********************")
-        self.afficherPop() #population finale
         #self.AfficherReglesValide()
         #self.stats()
 
@@ -155,11 +153,7 @@ class AG:
                         ef2.setCout(c2.getFitness())
                         ef2.setConfiance(c2.getConfiance())
                         ef2.setSupport(c2.getSupport())
-                        debut_encod = time.time()
-                        ef1.encoder()
-                        ef2.encoder()
-                        fin_encod = time.time()
-                        self.temps_encod += (fin_encod - debut_encod) 
+
                     
                     #======> remplacement des parents
                     remplace=0
@@ -276,32 +270,38 @@ class AG:
                 self.population[j].setCout(c.getFitness())
                 self.population[j].setSupport(c.getSupport())
                 self.population[j].setConfiance(c.getConfiance())
-                debut_encod = time.time()
-                self.population[j].encoder()
-                fin_encod = time.time()
-                self.temps_encod += (fin_encod - debut_encod)
                 
 
 
     def saveDonnees(self):
+        l=TraitementDeDonnees.totalItems+['fitness']
         with open("./results/results_AG_simple.csv", 'w') as file:
             writer = csv.writer(file)
-            for r in self.population:
-                writer.writerow(r.toList())
-            
+            writer.writerow(l)
+            for r in self.totalData:
+                debut_encod = time.time()
+                r.encoder()
+                fin_encod = time.time()
+                self.temps_encod += (fin_encod - debut_encod) 
+                writer.writerow(r.binary)
+    
 
 
 
 
 
-#TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
-TraitementDeDonnees.lireDonnees()
+
+TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
+#TraitementDeDonnees.lireDonnees()
 ag=AG(100,100,0.4,0.6,0.5,0.5,5,0.3,0.6,True,0,0,0)
 ag.lancerAlgoGen()
+ag.saveDonnees()
+print("********************")
+ag.afficherPop() #population finale
+
+
 
 '''
-ag.saveDonnees()
-
 c1=Chromosome(3,1,2,3,1,0.4,0.4,False)
 c1.setItems(["0","1","2"])
 
