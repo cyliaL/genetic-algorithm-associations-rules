@@ -328,4 +328,4 @@ x= one_hot_encoded_data.iloc[:,1:limit_sup].values #les colones de 1 limit_sup
 y= one_hot_encoded_data.iloc[:,0].values # la colonne fitnesse 0
 regressor = RandomForestRegressor(n_estimators = 30, random_state = 0)
 regressor.fit(x,y)
-print("yel7aaaaa")
+print("yel7aaaaa c bn")
