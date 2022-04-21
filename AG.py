@@ -275,7 +275,7 @@ class AG:
 
     def saveDonnees(self):
         l=TraitementDeDonnees.totalItems+['fitness']
-        with open("./results/results_AG_simple.csv", 'w') as file:
+        with open("./results/results_AG_simple.csv", 'w',newline='') as file:
             writer = csv.writer(file)
             writer.writerow(l)
             for r in self.totalData:
@@ -288,10 +288,9 @@ class AG:
 
 
 
+'''
 
-
-
-TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
+TraitementDeDonnees.lireDonneesBinaires("data\DataSet1.txt")
 #TraitementDeDonnees.lireDonnees()
 ag=AG(100,100,0.4,0.6,0.5,0.5,5,0.3,0.6,True,0,0,0)
 ag.lancerAlgoGen()
@@ -299,6 +298,7 @@ ag.saveDonnees()
 print("********************")
 ag.afficherPop() #population finale
 
+'''
 
 
 '''
@@ -313,19 +313,19 @@ l.append(c1)
 
 if(c1 in l):
     print(True)'''
-'''import pandas as pd
+
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor
  
-dataset = pd.read_csv('data/randomf.csv')
-x= dataset.iloc[:,0:12].values #les colones de 0 a 11
-y= dataset.iloc[:,12].values # la colonne fitnesse 12
-
-regressor = RandomForestRegressor(n_estimators = 10, random_state = 0)
+dataset = pd.read_csv('results/results_AG_simple.csv')
+TraitementDeDonnees.lireDonneesBinaires("data\DataSet1.txt")
+co = TraitementDeDonnees.totalItems
+one_hot_encoded_data = pd.get_dummies(dataset, columns = co)
+limit_sup = TraitementDeDonnees.nbItems * 3 +1
+x= one_hot_encoded_data.iloc[:,1:limit_sup].values #les colones de 1 limit_sup
+y= one_hot_encoded_data.iloc[:,0].values # la colonne fitnesse 0
+regressor = RandomForestRegressor(n_estimators = 30, random_state = 0)
 regressor.fit(x,y)
-
-
-y_pred=regressor.predict([[0,0,0,0,1,0,0,0,2,0,0,0]])
-print(y_pred)'''
-    
+print("yel7aaaaa")
