@@ -290,11 +290,13 @@ class AG:
 
 '''
 
-TraitementDeDonnees.lireDonneesBinaires("data\DataSet1.txt")
+TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
 #TraitementDeDonnees.lireDonnees()
 ag=AG(100,100,0.4,0.6,0.5,0.5,5,0.3,0.6,True,0,0,0)
 ag.lancerAlgoGen()
 ag.saveDonnees()
+
+
 print("********************")
 ag.afficherPop() #population finale
 
@@ -313,7 +315,7 @@ l.append(c1)
 
 if(c1 in l):
     print(True)'''
-
+'''
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -328,4 +330,4 @@ x= one_hot_encoded_data.iloc[:,1:limit_sup].values #les colones de 1 limit_sup
 y= one_hot_encoded_data.iloc[:,0].values # la colonne fitnesse 0
 regressor = RandomForestRegressor(n_estimators = 30, random_state = 0)
 regressor.fit(x,y)
-print("yel7aaaaa c bn")
+print("yel7aaaaa c bn")'''

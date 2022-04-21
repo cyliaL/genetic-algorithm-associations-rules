@@ -92,15 +92,6 @@ class TraitementDeDonnees:
     def incTime(ti):
         TraitementDeDonnees.time += ti
 
-
-    @staticmethod
-    def encoderDonnees(self,path):
-        dataset=
-
-            
-
-
-
 #TraitementDeDonnees.lireDonneesBinaires("data\DataSet1.txt")
 #print(TraitementDeDonnees.bdd)
 
