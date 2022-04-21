@@ -186,14 +186,14 @@ class Chromosome:
             while(i<self.taille):
                 if i >= self.indice:
                     if self.items[i]==it:
-                        self.binary.append(2)
+                        self.binary.append('c')
                         break
                 elif self.items[i]==it:
-                        self.binary.append(1)
+                        self.binary.append('a')
                         break  
                 i += 1
             if i==self.taille:
-                self.binary.append(0)
+                self.binary.append('n')
         self.binary.append(self.cout)
 
 
