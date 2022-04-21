@@ -2,7 +2,7 @@ from Cout import cout
 import time
 from datetime import datetime
 from ExempleBDD import ExempleBDD
-
+import pandas as pd
 class TraitementDeDonnees:
     time=0
     nbTransactions=0
@@ -91,6 +91,14 @@ class TraitementDeDonnees:
     @staticmethod
     def incTime(ti):
         TraitementDeDonnees.time += ti
+
+
+    @staticmethod
+    def encoderDonnees(self,path):
+        dataset=
+
+            
+
 
 
 #TraitementDeDonnees.lireDonneesBinaires("data\DataSet1.txt")
