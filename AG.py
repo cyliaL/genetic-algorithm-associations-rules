@@ -275,7 +275,7 @@ class AG:
 
     def saveDonnees(self):
         l=TraitementDeDonnees.totalItems+['fitness']
-        with open("./results/results_AG_simple.csv", 'w') as file:
+        with open("./results/results_AG_simple.csv", 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(l)
             for r in self.totalData:
