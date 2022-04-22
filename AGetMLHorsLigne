@@ -11,7 +11,7 @@ from Cout import cout
 from TraitementDeDonnees import TraitementDeDonnees
 
 
-class AG:
+class AGetMLHorsLigne:
 
     def __init__(self, nbIteration, taillePop, alpha, beta, pc, pm,  tailleMaxChromosome, minsup, minconf, 
     michigan ,typeCroisement, typeRemplacement, TypeExec):
@@ -29,6 +29,7 @@ class AG:
         self.typeRemplacement=typeRemplacement
         self.population=[]
         self.TypeExec = TypeExec
+        self.temps_encod = 0
         self.temps_exec = 0
         self.totalData=set()
 
@@ -62,9 +63,17 @@ class AG:
                             
 
     def calculCoutPop(self):
-        if(self.TypeExec==0) : 
+        if(self.TypeExec==0):
+            x=[]
             for r in self.population:
-                r.calculerCoutRegleCPU()
+                debut_encod = time.time()
+                r.encoder()
+                x.append(r.binary)
+                fin_encod = time.time()
+            results=TraitementDeDonnees.calculFitnessModelHorsLigne(x)
+            print(results)
+            for i,r in enumerate(self.population):
+                r.setFitness(results[i])
                 #calcul=TraitementDeDonnees.calculFitnessCPU(r,self.alpha,self.beta)
                 #r.setCout(calcul.getFitness())
                 #r.setConfiance(calcul.getConfiance())
@@ -86,7 +95,6 @@ class AG:
         self.totalData.update(set(self.population))
         fin_exec = time.time()
         self.temps_exec += (fin_exec - debut_exec)
-        TraitementDeDonnees.saveDonnees(self.totalData)
         #self.AfficherReglesValide()
         #self.stats()
 
@@ -270,5 +278,18 @@ class AG:
                 self.population[j].setCout(c.getFitness())
                 self.population[j].setSupport(c.getSupport())
                 self.population[j].setConfiance(c.getConfiance())
-    
+                
+
+
+    def saveDonnees(self):
+        l=TraitementDeDonnees.totalItems+['fitness']
+        with open("./results/results_AG_simple.csv", 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(l)
+            for r in self.totalData:
+                debut_encod = time.time()
+                r.encoder()
+                fin_encod = time.time()
+                self.temps_encod += (fin_encod - debut_encod) 
+                writer.writerow(r.binary)
 
