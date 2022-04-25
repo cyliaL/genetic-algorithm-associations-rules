@@ -194,7 +194,6 @@ class Chromosome:
                 i += 1
             if i==self.taille:
                 self.binary.append('n')
-        self.binary.append(self.cout)
 
 
 '''test

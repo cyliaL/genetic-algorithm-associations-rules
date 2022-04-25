@@ -86,6 +86,7 @@ class AG:
         self.totalData.update(set(self.population))
         fin_exec = time.time()
         self.temps_exec += (fin_exec - debut_exec)
+        print("le temps d'execution de l'AG simple = ",self.temps_exec)
         TraitementDeDonnees.saveDonnees(self.totalData)
         #self.AfficherReglesValide()
         #self.stats()
