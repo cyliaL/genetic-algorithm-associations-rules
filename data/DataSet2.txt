@@ -1,20 +1,3 @@
-20
-LIST OF ITEMS
-books
-camera
-laptop
-headphones
-table
-cellphone
-monitor
-mouse
-TV
-keyboard
-clothes
-shoes
-cosmetics
-chair
-BEGIN_DATA
 books camera laptop headphones table
 cellphone monitor mouse TV keyboard
 clothes shoes cosmetics headphones TV
@@ -34,5 +17,4 @@ books mouse laptop cosmetics
 clothes cosmetics cellphone TV
 table chair headphones shoes
 camera cosmetics laptop cellphone
-books camera clothes cellphone TV 
-END_DATA
+books camera clothes cellphone TV  

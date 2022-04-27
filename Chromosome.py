@@ -195,16 +195,52 @@ class Chromosome:
             if i==self.taille:
                 self.binary.append('n')
 
+    def encoderBinaire(self):
+        antecedants=[]
+        conclusion=[]
+        for it in TraitementDeDonnees.totalItems:
+            i=0
+            while(i<self.indice):
+                #print('heyy')
+                if self.items[i]==it:
+                    #print('goooo')
+                    self.binary.append(1)
+                    break
+                i += 1
+            if i==self.indice:
+                self.binary.append(0)
+                
+        for it in TraitementDeDonnees.totalItems:    
+            j=self.indice
+            while(j<self.taille):
+                if self.items[j]==it:
+                    self.binary.append(1)
+                    break
+                j += 1
+            if j==self.taille:
+                self.binary.append(0)
 
-'''test
-TraitementDeDonnees.lireDonneesBinaires("data\DataSet1.txt")
-TraitementDeDonnees.lireDonnees()
+
+'''
+#test
+TraitementDeDonnees.lireDonneesSynthetiques("data\DataSet1.txt")
+#TraitementDeDonnees.lireDonnees()
 print("total items = ",TraitementDeDonnees.totalItems)
 print("--------------------------------------")
-regle1 = Chromosome(4,0,0,0,2,0.1,0.1,False)
-regle1.chromosomeAlea() 
-regle2=Chromosome(5,0,0,0,2,0.1,0.1,False)
-regle2.chromosomeAlea()
+regle1 = Chromosome(10,0,0,0,5,0.1,0.1,False)
+regle1.items=['10 keyboard', '2 camera', '6 cellphone', '12 shoes', '13 cosmetics', '5 table', '4 headphones', '1 books', '11 clothes', '3 laptop']
+regle2=Chromosome(10,0,0,0,6,0.1,0.1,False)
+regle2.items=['9 TV', '11 clothes', '8 mouse', '10 keyboard', '14 chair', '2 camera', '13 cosmetics', '1 books', '7 monitor', '6 cellphone']      
+
+regle1.encoderBinaire()
+regle2.encoderBinaire()
+
+print(regle1.items)
+print(regle1.binary)
+
+print('=====================================')
+print(regle2.items)
+print(regle2.binary)
 
 
 

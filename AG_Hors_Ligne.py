@@ -11,7 +11,7 @@ from Cout import cout
 from TraitementDeDonnees import TraitementDeDonnees
 import pandas as pd
 
-class hii:
+class AG_Hors_Ligne:
     def __init__(self, nbIteration, taillePop, alpha, beta, pc, pm,  tailleMaxChromosome, minsup, minconf, 
     michigan ,typeCroisement, typeRemplacement, TypeExec):
         self.nbIterations=nbIteration
@@ -63,10 +63,10 @@ class hii:
         if(self.TypeExec==0):
             for r in self.population:
                 debut_encod = time.time()
-                r.encoder()
+                r.encoderBinaire()
                 fin_encod = time.time()
                 TraitementDeDonnees.temps_encod+=(fin_encod-debut_encod)
-            fitness=TraitementDeDonnees.calculFitnessModelHorsLigne(self.population)
+            fitness=TraitementDeDonnees.calculFitnessModelHorsLigneBinaire(self.population)
                 #r.setCout(fitness)
             for i,r in enumerate(self.population):
                 r.setCout(fitness[i])
@@ -88,9 +88,12 @@ class hii:
         if(self.TypeExec==0):
             #self.afficherPop() # population initiale
             for i in range(self.nbIterations):
+                #self.afficherPop()
                 self.croisement()
                 self.mutation()
+
         fin_exec = time.time()
+        self.afficherPop()
         self.temps_exec += (fin_exec - debut_exec)
         print("le temps d'execution de l'AG avec modèle hors-ligne = ", self.temps_exec)
         #self.AfficherReglesValide()
@@ -152,14 +155,13 @@ class hii:
                     #======> evaluation des individus fils
                     if self.TypeExec==0:
                         debut_encod = time.time()
-                        ef1.encoder()
-                        ef2.encoder()
+                        ef1.encoderBinaire()
+                        ef2.encoderBinaire()
                         fin_encod = time.time()
                         TraitementDeDonnees.temps_encod+=fin_encod-debut_encod            
-                        c1=TraitementDeDonnees.calculFitnessModelHorsLigne(ef1.binary)
-                        ef1.setCout(c1)
-                        c2=TraitementDeDonnees.calculFitnessModelHorsLigne(ef2.binary)
-                        ef1.setCout(c2)
+                        val=TraitementDeDonnees.calculFitnessModelHorsLigneBinaire([ef1.binary,ef2.binary])
+                        ef1.setCout(val[0])
+                        ef1.setCout(val[1])
 
                     
                     #======> remplacement des parents
@@ -196,11 +198,16 @@ class hii:
         
 
     def afficherPop(self):
+        print("===========================================================================")
+        print("===========================================================================")
+        print("===========================================================================")
+        print("===========================================================================")
         for x in self.population:
             x.afficherRegle()
 
 
     def AfficherReglesValide(self):
+
         print("----------Les Regles valides----------")
         for j in range(self.taillePop):
             if( self.population[j].getSupport() > self.minsup and self.population[j].getConfiance() > self.minconf):
@@ -273,13 +280,12 @@ class hii:
                     if(not self.contientRegle(mut)):
                         break
                 debut_encod = time.time()
-                mut.encoder()
+                mut.encoderBinaire()
                 fin_encod = time.time()
                 TraitementDeDonnees.temps_encod+=fin_encod-debut_encod 
-                c=TraitementDeDonnees.calculFitnessModelHorsLigne(mut.binary)
+                c=TraitementDeDonnees.calculFitnessModelHorsLigneBinaire([mut.binary])
                 mut.setCout(c)
                 self.population[j]=mut
-
                 
 
 

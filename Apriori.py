@@ -7,14 +7,13 @@ from mlxtend.frequent_patterns import apriori
 
 from TraitementDeDonnees import TraitementDeDonnees
 
-TraitementDeDonnees.lireDonneesBinaires("data\DataSet5.txt")
+TraitementDeDonnees.lireDonneesSynthetiques("data\DataSet5.txt")
 
 te = TransactionEncoder()
 te_ary = te.fit(TraitementDeDonnees.bdd).transform(TraitementDeDonnees.bdd)
 print(te_ary)
 te_ary.astype(int)
 print(te.columns_)
-pd.DataFrame(te_ary, columns=te.columns_)
 
 df=pd.DataFrame(te_ary, columns=te.columns_)
 df1 = apriori(df,min_support=0.3,use_colnames=True,verbose =1)

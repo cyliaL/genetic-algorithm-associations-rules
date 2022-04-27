@@ -20,13 +20,16 @@ import numpy as np
 
 
 class TraitementDeDonnees:
-    time=0
+    temps_calc_fitness=0
     temps_encod=0
     temps_prediction=0
     nbTransactions=0
     nbItems=0
     totalItems=[]
     bdd=[]
+
+    def __init__(self) -> None:
+        pass
 
 
     @staticmethod
@@ -84,30 +87,7 @@ class TraitementDeDonnees:
         print("okkkkk")  
 
 
-    @staticmethod
-    def lireDonneesSynthetiques(path):
-        with open(path, 'r') as file:
-            data = file.read().splitlines()
-            TraitementDeDonnees.nbTransactions=int(data[0])
-            index=2
-            while True:
-                item=str(data[index])
-                if item=="BEGIN_DATA":
-                    index+=1
-                    break
-                else:
-                    TraitementDeDonnees.totalItems.append(item)
-                    temp=item
-                    index+=1
-            tokens=temp.split()
-            TraitementDeDonnees.nbItems=int(tokens[0])
-            while(True):
-                transaction=str(data[index])
-                if(transaction=="END_DATA"):
-                    break
-                temp=transaction.split()
-                TraitementDeDonnees.bdd.append(temp)
-                index+=1
+
 	            
 
 
@@ -165,7 +145,7 @@ class TraitementDeDonnees:
     #temps de calcul de la la fitness durant l'optimisation
     @staticmethod
     def incTime(ti):
-        TraitementDeDonnees.time += ti
+        TraitementDeDonnees.temps_calc_fitness += ti
 
 
     @staticmethod
@@ -252,9 +232,6 @@ class TraitementDeDonnees:
             print('temps d''entrainement = ',temps_fin-temps_debut)
             print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_NN))
 
-
-
-
     @staticmethod
     def calculFitnessModelHorsLigne(regle):
         debut_encodage = time.time()
@@ -275,7 +252,122 @@ class TraitementDeDonnees:
         #print(val)
         return val[3:]
 
+    '''=========================================Encodage binaire==============================================='''
+    
+    @staticmethod
+    def lireDonneesSynthetiques(path):
+        with open(path, 'r') as file:
+            data = file.read().splitlines()
+            TraitementDeDonnees.nbTransactions=int(data[0])
+            index=2
+            while True:
+                item=str(data[index])
+                if item=="BEGIN_DATA":
+                    index+=1
+                    break
+                else:
+                    temp=item.split()
+                    TraitementDeDonnees.totalItems.append(temp[0])
+                    index+=1
+            TraitementDeDonnees.nbItems=len(TraitementDeDonnees.totalItems)
+            while(True):
+                transaction=str(data[index])
+                if(transaction=="END_DATA"):
+                    break
+                temp=transaction.split()
+                TraitementDeDonnees.bdd.append(temp)
+                index+=1
+
+    @staticmethod
+    def saveDonneesBinaires(totalData):
+        l=TraitementDeDonnees.totalItems+['fitness']
+        antecedants=[]
+        conclusion=[]
+        index=0
+        while index<TraitementDeDonnees.nbItems:
+            temp1="".join(("ant_", TraitementDeDonnees.totalItems[index]))
+            antecedants.append(temp1)
+            temp2="".join(("conc_", TraitementDeDonnees.totalItems[index]))
+            conclusion.append(temp2)
+            index+=1
+        attributs=antecedants+conclusion+["fitness"]
         
+        with open("./results/results_AG_simple.csv", 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(attributs)
+            for r in totalData:
+                debut_encod = time.time()
+                r.encoderBinaire()
+                r.binary.append(r.cout)
+                fin_encod = time.time()
+                TraitementDeDonnees.temps_encod += (fin_encod - debut_encod) 
+                writer.writerow(r.binary)
+
+        
+
+
+    @staticmethod
+    def generateModelHorsLigneBinaire(numModel):        
+        dataset = pd.read_csv('results/results_AG_simple.csv',header=0)
+        x= dataset.drop(columns=['fitness'])
+        y= dataset["fitness"] # la colonne fitnesse 0
+        x_train, x_test, y_train, y_test =train_test_split(x, y,test_size=0.25, random_state=0)
+        '''--------------------------------------------------------------------------------'''
+        if(numModel==0):
+            print("Random Forest Regressor")
+            temps_debut = time.time()
+            TraitementDeDonnees.model = RandomForestRegressor(n_estimators = 30, random_state = 0)
+            TraitementDeDonnees.model.fit(x_train,y_train)
+            temps_fin = time.time()
+            y_pred_RF = TraitementDeDonnees.model.predict(x_test)
+            print('temps d''entrainement = ',temps_fin-temps_debut)
+            print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_RF))
+        if(numModel==1):
+            print("Support Vector Regressor")
+            temps_debut = time.time()
+            TraitementDeDonnees.model = svm.SVR()
+            TraitementDeDonnees.model.fit(x_train,y_train)
+            temps_fin = time.time()
+            y_pred_SVM=TraitementDeDonnees.model.predict(x_test)
+            print('temps d''entrainement = ',temps_fin-temps_debut)
+            print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_SVM))
+        if(numModel==2):
+            print("Decison Tree Regressor")
+            temps_debut = time.time()
+            TraitementDeDonnees.model = DecisionTreeRegressor(random_state = 0)
+            TraitementDeDonnees.model.fit(x_train,y_train)
+            temps_fin = time.time()
+            y_pred_DT=TraitementDeDonnees.model.predict(x_test)
+            print('temps d''entrainement = ',temps_fin-temps_debut)
+            print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_DT))
+        if(numModel==3):
+            print("Neural Network Regressor")
+            temps_debut = time.time()
+            TraitementDeDonnees.model = MLPRegressor(max_iter=2000).fit(x_train,y_train)
+            TraitementDeDonnees.model.fit(x_train,y_train)
+            temps_fin = time.time()
+            y_pred_NN=TraitementDeDonnees.model.predict(x_test)
+            print('temps d''entrainement = ',temps_fin-temps_debut)
+            print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_NN))
+
+
+
+    @staticmethod
+    def calculFitnessModelHorsLigneBinaire(data):
+        #print(regle)
+        #co=TraitementDeDonnees.totalItems
+        #debut_encodage = time.time()
+        #df= pd.DataFrame(data)
+        #print(df)
+        #fin_encodage = time.time()
+        #TraitementDeDonnees.temps_encod+= (fin_encodage-debut_encodage)
+        debut_prediction = time.time()
+        val=TraitementDeDonnees.model.predict(data)
+        fin_prediction = time.time()
+        TraitementDeDonnees.temps_prediction += (fin_prediction - debut_prediction)
+        #print(val)
+        return val
+
 
 
 #TraitementDeDonnees.lireDonneesBinaires("data\DataSet1.txt")

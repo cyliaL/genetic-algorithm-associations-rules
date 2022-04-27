@@ -1,3 +1,18 @@
+20
+LIST OF ITEMS
+chocolate
+candy
+coke
+mango
+peanut
+pen
+luggage
+comforter
+bag
+cap
+detergent
+towel
+BEGIN_DATA
 chocolate candy coke mango peanut
 pen luggage comforter bag cap detergent towel 
 chocolate pen candy luggage 
@@ -18,3 +33,4 @@ peanut candy cap towel
 pen peanut comforter chocolate 
 pen peanut comforter chocolate cap candy
 chocolate peanut mango luggage bag towel detergent 
+END_DATA
