@@ -30,6 +30,7 @@ class AG:
         self.population=[]
         self.TypeExec = TypeExec
         self.temps_exec = 0
+        self.temps_eval_reelle=0
         self.totalData=set()
 
         for i in range(self.taillePop):
@@ -45,10 +46,6 @@ class AG:
                     c.setIndice(ind)
 
                 c.chromosomeAlea()
-                #calcul = TraitementDeDonnees.calculFitnessCPU(c,self.alpha,self.beta)
-                #c.setCout(calcul.getFitness())
-                #c.setConfiance(calcul.getConfiance())
-                #c.setSupport(calcul.getSupport())
 
                 for x in self.population:
                     if x.equals(c):
@@ -56,15 +53,25 @@ class AG:
                         break
 
                 if(nouveau==True):
+
+                    debut_eval=time.time()
+                    c.calculerCoutRegleCPU()
+                    fin_eval=time.time()
+                    self.temps_eval_reelle+=fin_eval-debut_eval
+
                     self.population.append(c)
                     break
-                
-                            
+
+
+
 
     def calculCoutPop(self):
         if(self.TypeExec==0) : 
             for r in self.population:
+                debut_eval=time.time()
                 r.calculerCoutRegleCPU()
+                fin_eval=time.time()
+                self.temps_eval_reelle+=fin_eval-debut_eval
                 #calcul=TraitementDeDonnees.calculFitnessCPU(r,self.alpha,self.beta)
                 #r.setCout(calcul.getFitness())
                 #r.setConfiance(calcul.getConfiance())
@@ -77,9 +84,11 @@ class AG:
         debut_exec = time.time()
        
         if(self.TypeExec==0):
-            self.calculCoutPop()   
+            #self.calculCoutPop()   
             #self.afficherPop() # population initiale
+            print(self.nbIterations)
             for i in range(self.nbIterations):
+                print(i)
                 self.totalData.update(set(self.population))
                 self.croisement()
                 self.mutation()
@@ -88,6 +97,7 @@ class AG:
         fin_exec = time.time()
         self.temps_exec += (fin_exec - debut_exec)
         print("le temps d'execution de l'AG simple = ",self.temps_exec)
+        print("le temps d'evaluation réelle = ",self.temps_eval_reelle)
         TraitementDeDonnees.saveDonneesBinaires(self.totalData)
         #self.AfficherReglesValide()
         #self.stats()
@@ -147,15 +157,11 @@ class AG:
                         ef2.getItems().append(self.population[paires[j+1]].getItems()[k])   
                     #======> evaluation des individus fils
                     if self.TypeExec==0:
-                        c1=TraitementDeDonnees.calculFitnessCPU(ef1,self.alpha,self.beta)
-                        c2=TraitementDeDonnees.calculFitnessCPU(ef2,self.alpha,self.beta)
-                        ef1.setCout(c1.getFitness())
-                        ef1.setSupport(c1.getSupport())
-                        ef1.setConfiance(c1.getConfiance())
-                        ef2.setCout(c2.getFitness())
-                        ef2.setConfiance(c2.getConfiance())
-                        ef2.setSupport(c2.getSupport())
-
+                        debut_eval=time.time()
+                        ef1.calculerCoutRegleCPU()
+                        ef2.calculerCoutRegleCPU()
+                        fin_eval=time.time()
+                        self.temps_eval_reelle+=fin_eval-debut_eval
                     
                     #======> remplacement des parents
                     remplace=0
@@ -267,10 +273,17 @@ class AG:
                     mut.getItems()[indice] = val
                     if(not self.contientRegle(mut)):
                         break
+                debut_eval=time.time()
+                mut.calculerCoutRegleCPU()
+                fin_eval=time.time()
+                self.temps_eval_reelle+=fin_eval-debut_eval
                 self.population[j]=mut
-                c=TraitementDeDonnees.calculFitnessCPU(self.population[j],self.alpha,self.beta)
-                self.population[j].setCout(c.getFitness())
-                self.population[j].setSupport(c.getSupport())
-                self.population[j].setConfiance(c.getConfiance())
-    
 
+
+
+
+
+#TraitementDeDonnees.lireDonneesSynthetiques('data\data.txt')
+#ag=AG(100,30,0.4,0.6,0.5,0.5,3,0.3,0.6,True,0,0,0)
+
+#ag.lancerAlgoGen()

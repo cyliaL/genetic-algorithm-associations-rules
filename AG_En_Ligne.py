@@ -21,9 +21,9 @@ from sklearn.neural_network import MLPRegressor
 
 class AG_En_Ligne:
 
-    def __init__(self, nbIteration, taillePop, alpha, beta, pc, pm,  tailleMaxChromosome, minsup, minconf, 
-    michigan ,typeCroisement, typeRemplacement, typeExec,typeModel):
-        self.nbIterations=nbIteration
+    def __init__(self, maxIterations, taillePop, alpha, beta, pc, pm,  tailleMaxChromosome, minsup, minconf, 
+    michigan ,typeCroisement, typeRemplacement, typeExec,typeModel,typeMAJ):
+        self.maxIterations=maxIterations
         self.taillePop=taillePop
         self.alpha=alpha
         self.beta=beta
@@ -37,6 +37,8 @@ class AG_En_Ligne:
         self.typeRemplacement=typeRemplacement
         self.TypeExec = typeExec
         self.typeModel=typeModel
+        self.typeMAJ=typeMAJ
+        self.nbIterations=0
         self.population = []
 
 
@@ -44,6 +46,7 @@ class AG_En_Ligne:
         self.pop_train_val = []
 
         self.temps_entrainement=0
+        self.temps_eval_reelle=0
         self.temps_prediction=0
         self.temps_exec = 0
         self.temps_encod=0
@@ -72,18 +75,21 @@ class AG_En_Ligne:
                         break
 
                 if(nouveau==True):
+                    debut_encod=time.time()
                     c.encoderBinaire()
+                    fin_encod=time.time()
+                    self.temps_encod+=fin_encod-debut_encod
                     self.population.append(c)
                     self.pop_train.append(c.binary)
                     break
 
         
-        self.calculCoutPop()
+        self.eval_function_pop()
         for r in self.population:
             self.pop_train_val.append(r.getCout())
 
         self.ind_best=self.population[0]
-        self.inv_condidate=self.population[0]
+        self.ind_candidate=self.population[0]
 
         '''for i in range(self.taillePop - 1):
             if self.population[i + 1].getCout() > self.ind_best.getCout():
@@ -98,7 +104,7 @@ class AG_En_Ligne:
                 
                             
 
-    def initialize(self):
+    '''def initialize(self):
         for i in range(self.taillePop):
             while(True):
                 #print("hhh")
@@ -127,9 +133,8 @@ class AG_En_Ligne:
                     self.population.append(c)
                     self.pop_train.append(c.binary)
                     break
-
         
-        self.calculCoutPop()
+        self.eval_function_pop()
         for r in self.population:
             self.pop_train_val.append(r.getCout())
 
@@ -137,7 +142,7 @@ class AG_En_Ligne:
 
         for i in range(self.taillePop - 1):
             if self.population[i + 1].getCout() > self.ind_best.getCout():
-                self.ind_best = self.population[i + 1]
+                self.ind_best = self.population[i + 1]'''
 
 
     def train_model(self):
@@ -147,7 +152,7 @@ class AG_En_Ligne:
             self.model = RandomForestRegressor(n_estimators = 30, random_state = 0)
             self.model.fit(self.pop_train,self.pop_train_val)
             temps_fin = time.time()
-            self.temps_entrainement=temps_debut-temps_fin
+            self.temps_entrainement+=temps_debut-temps_fin
             #print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_RF))
         
         if(self.typeModel==1):
@@ -156,7 +161,7 @@ class AG_En_Ligne:
             self.model = svm.SVR()
             self.model.fit(self.pop_train,self.pop_train_val)
             temps_fin = time.time()
-            self.temps_entrainement=temps_fin-temps_debut
+            self.temps_entrainement+=temps_fin-temps_debut
             #print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_SVM))
         if(self.typeModel==2):
             print("Decison Tree Regressor")
@@ -164,7 +169,7 @@ class AG_En_Ligne:
             self.model = DecisionTreeRegressor(random_state = 0)
             self.model.fit(self.pop_train,self.pop_train_val)
             temps_fin = time.time()
-            self.temps_entrainement=temps_fin-temps_debut
+            self.temps_entrainement+=temps_fin-temps_debut
             #print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_DT))
         if(self.typeModel==3):
             print("Neural Network Regressor")
@@ -172,28 +177,54 @@ class AG_En_Ligne:
             self.model = MLPRegressor(max_iter=2000)
             self.model.fit(self.pop_train,self.pop_train_val)
             temps_fin = time.time()
-            self.temps_entrainement=temps_fin-temps_debut
+            self.temps_entrainement+=temps_fin-temps_debut
 
 
     
     def model_predict(self,x):
-        val = self.rfr_val.predict(x)
-        return val
+        data=[x.binary]
+        debut_pred=time.time()
+        val = self.model.predict(data)
+        fin_pred=time.time()
+        self.temps_prediction+=fin_pred-debut_pred
+        x.setCout(val)
     
 
     def update_model(self):
-        pop_sort=self.trierPop()
-        for i in range(len(pop_sort)):
-            self.ind_candidate = pop_sort[i]
-            if self.ind_candidate not in (self.pop_train):
+        #pop_sort=self.trierPop()
+        if(self.typeMAJ==0):
+            for i in range(len(self.population)):
+                self.ind_candidate = self.population[i]
+                if self.ind_candidate not in (self.pop_train):
+                    #self.ind_candidate.encoderBinaire()
+                    #self.ind_candidate.afficherRegle()
+                    #print(self.pop_train)
+                    #print(self.pop_train_val)
+                    self.eval_function(self.ind_candidate)
+                    self.pop_train.append(self.ind_candidate.binary)
+                    self.pop_train_val.append(self.ind_candidate.getCout())
+                    #print(self.pop_train)
+                    #print(self.pop_train_val)
+                    debut_entrain=time.time()
+                    self.model.fit(self.pop_train, self.pop_train_val)
+                    fin_entrain=time.time()
+                    self.temps_entrainement+=fin_entrain-debut_entrain
+                    break
+        else:
+            if self.nbIterations%10==0:
                 #print(len(self.pop_train))
-                #print(len(self.pop_train_val))
-                self.ind_candidate.encoderBinaire()
-                self.eval_function(self.ind_candidate)
-                self.pop_train.append(self.ind_candidate.binary)
-                self.pop_train_val.append(self.ind_candidate.getCout())
-                self.model.fit(self.pop_train, self.pop_train_val)
-                break
+                for r in self.population:
+                    self.eval_function(r)
+                    self.pop_train.append(r.binary)
+                    self.pop_train_val.append(r.getCout())
+                debut_entrain=time.time()
+                self.model.fit(self.pop_train,self.pop_train_val)
+                #x_train, x_test, y_train, y_test =train_test_split(self.pop_train, self.pop_train_val,test_size=0.25, random_state=0)
+                #self.model.fit(x_train,y_train)
+                fin_entrain=time.time()
+                self.temps_entrainement+=fin_entrain-debut_entrain
+                #y_pred_RF = self.model.predict(x_test)
+                #print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_RF))
 
     def update_best(self):
         if self.ind_candidate.getCout() > self.ind_best.getCout():
@@ -202,37 +233,52 @@ class AG_En_Ligne:
         
     def eval_function(self,c):
         if(self.TypeExec==0):
-            c.calculerCoutRegleCPU()
+            #c.calculerCoutRegleCPU(self.alpha,self.beta)
+            debut_eval=time.time()
+            calcul=TraitementDeDonnees.calculFitnessCPU(c,self.alpha,self.beta)
+            fin_eval=time.time()
+            self.temps_eval_reelle+=fin_eval-debut_eval
+            c.setCout(calcul.getFitness())
+            c.setConfiance(calcul.getConfiance())
+            c.setSupport(calcul.getSupport())
 
 
-    def calculCoutPop(self):
-        if(self.TypeExec==0) : 
+    def eval_function_pop(self):
+        if(self.TypeExec==0): 
             for r in self.population:
-                r.calculerCoutRegleCPU()
-                #calcul=TraitementDeDonnees.calculFitnessCPU(r,self.alpha,self.beta)
-                #r.setCout(calcul.getFitness())
-                #r.setConfiance(calcul.getConfiance())
-                #r.setSupport(calcul.getSupport())
+                #r.calculerCoutRegleCPU(self.alpha,self.beta)
+                debut_eval=time.time()
+                calcul=TraitementDeDonnees.calculFitnessCPU(r,self.alpha,self.beta)
+                fin_eval=time.time()
+                self.temps_eval_reelle+=fin_eval-debut_eval
+                r.setCout(calcul.getFitness())
+                r.setConfiance(calcul.getConfiance())
+                r.setSupport(calcul.getSupport())
 
         #elif(self.TypeExec==2) : self.population[i].calculerCoutRegleGPUDist()
         #elif(self.TypeExec==4) : self.population[i].calculerCoutReglesurThreads()
 
     def lancerAlgoGen(self):
         debut_exec = time.time()
-
         self.train_model()
         if(self.TypeExec==0):  
             #self.afficherPop() # population initiale
-            for i in range(self.nbIterations):
+            for self.nbIterations in range(self.maxIterations):
                 self.croisement()
                 self.mutation()
                 self.update_model()
                 self.update_best()
-        self.afficherPop()
+                self.afficherPop()
+                print("==============================================================")
+                print("==============================================================")
+                print("==============================================================")
         fin_exec = time.time()
         self.temps_exec += (fin_exec - debut_exec)
-        print("le temps d'execution de l'AG simple = ",self.temps_exec)
-        TraitementDeDonnees.saveDonneesBinaires(self.totalData)
+        print("le temps d'execution de l'AG en ligne = ",self.temps_exec)
+        print("le temps d'encodage binaire = ",self.temps_encod)
+        print("le temps d'evaluation reelle = ",self.temps_eval_reelle)
+        print("le temps d'entrainement = ",self.temps_entrainement)
+        print("le temps de prediction = ",self.temps_prediction)
         #self.AfficherReglesValide()
         #self.stats()
 
@@ -291,14 +337,14 @@ class AG_En_Ligne:
                         ef2.getItems().append(self.population[paires[j+1]].getItems()[k])   
                     #======> evaluation des individus fils
                     if self.TypeExec==0:
-                        c1=TraitementDeDonnees.calculFitnessCPU(ef1,self.alpha,self.beta)
-                        c2=TraitementDeDonnees.calculFitnessCPU(ef2,self.alpha,self.beta)
-                        ef1.setCout(c1.getFitness())
-                        ef1.setSupport(c1.getSupport())
-                        ef1.setConfiance(c1.getConfiance())
-                        ef2.setCout(c2.getFitness())
-                        ef2.setConfiance(c2.getConfiance())
-                        ef2.setSupport(c2.getSupport())
+                        debut_encod=time.time()
+                        ef1.encoderBinaire()
+                        ef2.encoderBinaire()
+                        fin_encod=time.time()
+                        self.temps_encod+=fin_encod-debut_encod
+
+                        self.model_predict(ef1)
+                        self.model_predict(ef2)
 
                     
                     #======> remplacement des parents
@@ -413,14 +459,16 @@ class AG_En_Ligne:
                     mut.getItems()[indice] = val
                     if(not self.contientRegle(mut)):
                         break
+                debut_encod=time.time()
+                mut.encoderBinaire()
+                fin_encod=time.time()
+                self.temps_encod+=fin_encod-debut_encod
+
+                self.model_predict(mut)
                 self.population[j]=mut
-                c=TraitementDeDonnees.calculFitnessCPU(self.population[j],self.alpha,self.beta)
-                self.population[j].setCout(c.getFitness())
-                self.population[j].setSupport(c.getSupport())
-                self.population[j].setConfiance(c.getConfiance())
     
 
-TraitementDeDonnees.lireDonneesSynthetiques('data\DataSet5.txt')
-ag=AG_En_Ligne(100,30,0.4,0.6,0.5,0.5,3,0.3,0.6,True,0,0,0,0)
+#TraitementDeDonnees.lireDonneesSynthetiques('data\DataSet5.txt')
+#ag=AG_En_Ligne(150,50,0.4,0.6,0.5,0.5,4,0.3,0.6,True,0,0,0,0,1)
 
-ag.lancerAlgoGen()
+#ag.lancerAlgoGen()

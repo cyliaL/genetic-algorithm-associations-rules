@@ -8,8 +8,10 @@ from AG_Hors_Ligne import AG_Hors_Ligne
 
 TraitementDeDonnees.lireDonneesSynthetiques('data\DataSet5.txt')
 print("hello")
+ag=AG(100,30,0.4,0.6,0.5,0.5,4,0.3,0.6,True,0,0,0)
+ag.lancerAlgoGen()
 TraitementDeDonnees.generateModelHorsLigneBinaire(0)
-val=TraitementDeDonnees.model.predict([[0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0]])
+val=TraitementDeDonnees.model.predict([[0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
 print(val)
 #print(TraitementDeDonnees.totalItems)
 #print(TraitementDeDonnees.nbItems)

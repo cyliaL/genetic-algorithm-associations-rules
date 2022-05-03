@@ -126,6 +126,7 @@ class Chromosome:
                     j+=1
                 if(nouveau==True):
                     break
+        
 
     def contient(self, item):#err
         for i in range(self.taille):
@@ -195,7 +196,9 @@ class Chromosome:
             if i==self.taille:
                 self.binary.append('n')
 
+
     def encoderBinaire(self):
+        #self.binary=[]
         antecedants=[]
         conclusion=[]
         for it in TraitementDeDonnees.totalItems:
