@@ -9,6 +9,7 @@ from Chromosome import Chromosome
 import random
 from Cout import cout
 from TraitementDeDonnees import TraitementDeDonnees
+from AG import AG
 import pandas as pd
 
 class AG_Hors_Ligne:
@@ -61,39 +62,31 @@ class AG_Hors_Ligne:
 
     def calculCoutPop(self):
         if(self.TypeExec==0):
+            data=[]
             for r in self.population:
                 debut_encod = time.time()
-                r.encoderBinaire()
+                r.encoder()
+                data.append(r.binary)
                 fin_encod = time.time()
                 TraitementDeDonnees.temps_encod+=(fin_encod-debut_encod)
-            fitness=TraitementDeDonnees.calculFitnessModelHorsLigneBinaire(self.population)
-                #r.setCout(fitness)
+            fitness=TraitementDeDonnees.calculFitnessModelHorsLigne(data)
             for i,r in enumerate(self.population):
                 r.setCout(fitness[i])
 
 
-                
-
-                #calcul=TraitementDeDonnees.calculFitnessCPU(r,self.alpha,self.beta)
-                #r.setCout(calcul.getFitness())
-                #r.setConfiance(calcul.getConfiance())
-                #r.setSupport(calcul.getSupport())
-
-        #elif(self.TypeExec==2) : self.population[i].calculerCoutRegleGPUDist()
-        #elif(self.TypeExec==4) : self.population[i].calculerCoutReglesurThreads()
 
     def lancerAlgoGen(self):
         debut_exec = time.time()
-       
         if(self.TypeExec==0):
             #self.afficherPop() # population initiale
+            self.calculCoutPop()
             for i in range(self.nbIterations):
                 #self.afficherPop()
                 self.croisement()
                 self.mutation()
 
         fin_exec = time.time()
-        self.afficherPop()
+        #self.afficherPop()
         self.temps_exec += (fin_exec - debut_exec)
         print("le temps d'execution de l'AG avec modèle hors-ligne = ", self.temps_exec)
         #self.AfficherReglesValide()
@@ -155,11 +148,11 @@ class AG_Hors_Ligne:
                     #======> evaluation des individus fils
                     if self.TypeExec==0:
                         debut_encod = time.time()
-                        ef1.encoderBinaire()
-                        ef2.encoderBinaire()
+                        ef1.encoder()
+                        ef2.encoder()
                         fin_encod = time.time()
                         TraitementDeDonnees.temps_encod+=fin_encod-debut_encod            
-                        val=TraitementDeDonnees.calculFitnessModelHorsLigneBinaire([ef1.binary,ef2.binary])
+                        val=TraitementDeDonnees.calculFitnessModelHorsLigne([ef1.binary,ef2.binary])
                         ef1.setCout(val[0])
                         ef1.setCout(val[1])
 
@@ -280,13 +273,32 @@ class AG_Hors_Ligne:
                     if(not self.contientRegle(mut)):
                         break
                 debut_encod = time.time()
-                mut.encoderBinaire()
+                mut.encoder()
                 fin_encod = time.time()
                 TraitementDeDonnees.temps_encod+=fin_encod-debut_encod 
-                c=TraitementDeDonnees.calculFitnessModelHorsLigneBinaire([mut.binary])
+                c=TraitementDeDonnees.calculFitnessModelHorsLigne([mut.binary])
                 mut.setCout(c)
                 self.population[j]=mut
-                
 
 
-
+TraitementDeDonnees.lireDonneesSynthetiques('data\data.txt')
+debut_exec = time.time()
+ag=AG(50,30,0.4,0.6,0.5,0.5,10,0.3,0.6,True,0,0,0)
+ag.lancerAlgoGen()
+fin_exec = time.time()
+temps_exec = (fin_exec - debut_exec)
+print("le temps d'execution de l'AG simple = ",temps_exec)
+TraitementDeDonnees.saveDonneesBinaires(ag.totalData)
+print("le temps de calcul de la fitness réelle durant l'optimisation = ", TraitementDeDonnees.temps_calc_fitness)
+print("le temps de l'encodage = ", TraitementDeDonnees.temps_encod)
+print("==========================================================================================")
+'''TraitementDeDonnees.lireDonneesSynthetiques('data\data.txt')
+TraitementDeDonnees.temps_calc_fitness=0
+TraitementDeDonnees.temps_encod=0
+TraitementDeDonnees.temps_prediction=0
+TraitementDeDonnees.generateModelHorsLigne(0)
+#x=pd.DataFrame()
+agHorsLigne=AG_Hors_Ligne(50,30,0.4,0.6,0.5,0.5,10,0.3,0.6,True,0,0,0)
+agHorsLigne.lancerAlgoGen()
+print("le temps de prédiction = ", TraitementDeDonnees.temps_prediction)
+print("le temps d'encodage = ", TraitementDeDonnees.temps_encod)'''

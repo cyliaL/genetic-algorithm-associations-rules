@@ -23,6 +23,7 @@ class TraitementDeDonnees:
     temps_calc_fitness=0
     temps_encod=0
     temps_prediction=0
+    temps_entrain=0
     nbTransactions=0
     nbItems=0
     totalItems=[]
@@ -32,20 +33,9 @@ class TraitementDeDonnees:
         pass
 
 
+    #Les donnees de type transactions
     @staticmethod
-    def lireDonnees1(path):
-        '''with open(path, 'r') as file:
-            data = file.read().splitlines()
-            TraitementDeDonnees.nb_transactions, TraitementDeDonnees.total_items, TraitementDeDonnees.nb_items, transactions= int(data[0]), int(data[1]),int(data[2]), data[3:]
-            #print(TraitementDeDonnees.nb_transactions)
-            #print(TraitementDeDonnees.total_items)
-            #print(TraitementDeDonnees.nb_items)
-            #print(transactions)
-        inter=list(transactions)
-        for i in range(0, len(inter)):
-            transaction=inter[i].split(',')
-            #print(transaction) 
-            TraitementDeDonnees.bdd.append(transaction)'''
+    def lireDonneesTransactions(path):
         with open(path, "r") as file:
             for line in file:
                 transaction = []
@@ -55,54 +45,48 @@ class TraitementDeDonnees:
                     if word not in TraitementDeDonnees.totalItems:
                         TraitementDeDonnees.totalItems.append(word)
                 TraitementDeDonnees.bdd.append(transaction)
-            TraitementDeDonnees.nbItems=len(TraitementDeDonnees.totalItems)  
-        print("okkkkk")  
+            TraitementDeDonnees.nbItems=len(TraitementDeDonnees.totalItems)
 
 
-
+    #pour les données exemple
     @staticmethod
-    def lireDonnees2(path):
-        '''with open(path, 'r') as file:
-            data = file.read().splitlines()
-            TraitementDeDonnees.nb_transactions, TraitementDeDonnees.total_items, TraitementDeDonnees.nb_items, transactions= int(data[0]), int(data[1]),int(data[2]), data[3:]
-            #print(TraitementDeDonnees.nb_transactions)
-            #print(TraitementDeDonnees.total_items)
-            #print(TraitementDeDonnees.nb_items)
-            #print(transactions)
-        inter=list(transactions)
-        for i in range(0, len(inter)):
-            transaction=inter[i].split(',')
-            #print(transaction) 
-            TraitementDeDonnees.bdd.append(transaction)'''
-        with open(path, "r") as file:
-            for line in file:
-                transaction = []
-                TraitementDeDonnees.nbTransactions += 1
-                for word in line.split():
-                    transaction.append(word)
-                    if word not in TraitementDeDonnees.totalItems:
-                        TraitementDeDonnees.totalItems.append(word)
-                TraitementDeDonnees.bdd.append(transaction)
-            TraitementDeDonnees.nbItems=len(TraitementDeDonnees.totalItems)  
-        print("okkkkk")  
-
-
-
-	            
-
-
-    @staticmethod
-    def lireDonnees():
+    def lireDonneesExemple():
         TraitementDeDonnees.bdd = ExempleBDD().getBDD()
         TraitementDeDonnees.nbTransactions = len(TraitementDeDonnees.bdd)
         TraitementDeDonnees.nbItems = 9
         TraitementDeDonnees.totalItems=["1","2","3","4","5","6","7","8","9"]
 
 
+    
+    @staticmethod
+    def lireDonneesSynthetiques(path):
+        with open(path, 'r') as file:
+            data = file.read().splitlines()
+            TraitementDeDonnees.nbTransactions=int(data[0])
+            index=2
+            while True:
+                item=str(data[index])
+                if item=="BEGIN_DATA":
+                    index+=1
+                    break
+                else:
+                    temp=item.split()
+                    TraitementDeDonnees.totalItems.append(temp[0])
+                    index+=1
+            TraitementDeDonnees.nbItems=len(TraitementDeDonnees.totalItems)
+            while(True):
+                transaction=str(data[index])
+                if(transaction=="END_DATA"):
+                    break
+                temp=transaction.split()
+                TraitementDeDonnees.bdd.append(temp)
+                index+=1
+
+
     @staticmethod
     def calculFitnessCPU(regle, alpha, beta) :
         AetB = 0 #nombre d'appaition de A et B
-        A = 0    #nombbre d'appaition de d'un item antécédent 
+        A = 0    #nombre d'appaition de d'un item antécédent 
         B=0      #nombre d'appaition de d'un item conclusion
         cpt=0
         startTime = time.time() #le temps en ms
@@ -148,6 +132,8 @@ class TraitementDeDonnees:
         TraitementDeDonnees.temps_calc_fitness += ti
 
 
+    '''===================================   Lire Donnees Binaires   =========================================='''
+
     @staticmethod
     def saveDonnees(totalData):
         l=TraitementDeDonnees.totalItems+['fitness']
@@ -167,18 +153,6 @@ class TraitementDeDonnees:
             l3.append(0)
             writer.writerows([l1,l2,l3])
             
-
-    @staticmethod
-    def generate_hasard():
-        l1=[]
-        l2=[]
-        l3=[]
-        for i in range(TraitementDeDonnees.nbItems):
-            l1.append('n')
-            l2.append('a')
-            l3.append('c')
-        return [l1,l2,l3]
-
 
     @staticmethod
     def generateModelHorsLigne(numModel):        
@@ -232,16 +206,33 @@ class TraitementDeDonnees:
             print('temps d''entrainement = ',temps_fin-temps_debut)
             print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_NN))
 
+
     @staticmethod
-    def calculFitnessModelHorsLigne(regle):
+    def generate_hasard():
+        l1=[]
+        l2=[]
+        l3=[]
+        for i in range(TraitementDeDonnees.nbItems):
+            l1.append('n')
+            l2.append('a')
+            l3.append('c')
+        return [l1,l2,l3]
+
+
+
+    @staticmethod
+    def calculFitnessModelHorsLigne(data):
         debut_encodage = time.time()
         l1,l2,l3=TraitementDeDonnees.generate_hasard()
         population=[l1,l2,l3]
-        population.append(regle)
+        population.extend(data)
+        #print(population)
         #print(regle)
         co=TraitementDeDonnees.totalItems
+        #print(co)
         df= pd.DataFrame(population,columns = co)
         one_hot_encoded_data = pd.get_dummies(df, columns = co)
+        #print(one_hot_encoded_data)
         fin_encodage = time.time()
         TraitementDeDonnees.temps_encod+= (fin_encodage-debut_encodage)
         #print(df)
@@ -253,34 +244,10 @@ class TraitementDeDonnees:
         return val[3:]
 
     '''=========================================Encodage binaire==============================================='''
-    
-    @staticmethod
-    def lireDonneesSynthetiques(path):
-        with open(path, 'r') as file:
-            data = file.read().splitlines()
-            TraitementDeDonnees.nbTransactions=int(data[0])
-            index=2
-            while True:
-                item=str(data[index])
-                if item=="BEGIN_DATA":
-                    index+=1
-                    break
-                else:
-                    temp=item.split()
-                    TraitementDeDonnees.totalItems.append(temp[0])
-                    index+=1
-            TraitementDeDonnees.nbItems=len(TraitementDeDonnees.totalItems)
-            while(True):
-                transaction=str(data[index])
-                if(transaction=="END_DATA"):
-                    break
-                temp=transaction.split()
-                TraitementDeDonnees.bdd.append(temp)
-                index+=1
+
 
     @staticmethod
     def saveDonneesBinaires(totalData):
-        l=TraitementDeDonnees.totalItems+['fitness']
         antecedants=[]
         conclusion=[]
         index=0
@@ -320,6 +287,7 @@ class TraitementDeDonnees:
             TraitementDeDonnees.model.fit(x_train,y_train)
             temps_fin = time.time()
             y_pred_RF = TraitementDeDonnees.model.predict(x_test)
+            TraitementDeDonnees.temps_entrain=temps_fin-temps_debut
             print('temps d''entrainement = ',temps_fin-temps_debut)
             print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_RF))
         if(numModel==1):
@@ -354,23 +322,8 @@ class TraitementDeDonnees:
 
     @staticmethod
     def calculFitnessModelHorsLigneBinaire(data):
-        #print(regle)
-        #co=TraitementDeDonnees.totalItems
-        #debut_encodage = time.time()
-        #df= pd.DataFrame(data)
-        #print(df)
-        #fin_encodage = time.time()
-        #TraitementDeDonnees.temps_encod+= (fin_encodage-debut_encodage)
         debut_prediction = time.time()
         val=TraitementDeDonnees.model.predict(data)
         fin_prediction = time.time()
         TraitementDeDonnees.temps_prediction += (fin_prediction - debut_prediction)
-        #print(val)
         return val
-
-
-
-#TraitementDeDonnees.lireDonneesBinaires("data\DataSet1.txt")
-#print(TraitementDeDonnees.bdd)
-
-#print(TraitementDeDonnees.totalItems)

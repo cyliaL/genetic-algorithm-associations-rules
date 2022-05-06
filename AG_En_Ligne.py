@@ -51,6 +51,7 @@ class AG_En_Ligne:
         self.temps_exec = 0
         self.temps_encod=0
         
+        
         for i in range(self.taillePop):
             while(True):
                 #print("hhh")
@@ -191,8 +192,10 @@ class AG_En_Ligne:
     
 
     def update_model(self):
-        #pop_sort=self.trierPop()
         if(self.typeMAJ==0):
+            pop_sort=self.trierPop()
+            #for x in pop_sort:
+                #x.afficherRegle()
             for i in range(len(self.population)):
                 self.ind_candidate = self.population[i]
                 if self.ind_candidate not in (self.pop_train):
@@ -205,10 +208,18 @@ class AG_En_Ligne:
                     self.pop_train_val.append(self.ind_candidate.getCout())
                     #print(self.pop_train)
                     #print(self.pop_train_val)
+                    #debut_entrain=time.time()
+                    #self.model.fit(self.pop_train, self.pop_train_val)
+                    #fin_entrain=time.time()
+                    #self.temps_entrainement+=fin_entrain-debut_entrain
                     debut_entrain=time.time()
-                    self.model.fit(self.pop_train, self.pop_train_val)
+                    x_train, x_test, y_train, y_test =train_test_split(self.pop_train, self.pop_train_val,test_size=0.25, random_state=8)
+                    self.model.fit(x_train,y_train)
                     fin_entrain=time.time()
                     self.temps_entrainement+=fin_entrain-debut_entrain
+                    y_pred_RF = self.model.predict(x_test)
+                    print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_RF))
+
                     break
         else:
             if self.nbIterations%10==0:
@@ -218,13 +229,13 @@ class AG_En_Ligne:
                     self.pop_train.append(r.binary)
                     self.pop_train_val.append(r.getCout())
                 debut_entrain=time.time()
-                self.model.fit(self.pop_train,self.pop_train_val)
-                #x_train, x_test, y_train, y_test =train_test_split(self.pop_train, self.pop_train_val,test_size=0.25, random_state=0)
-                #self.model.fit(x_train,y_train)
+                #self.model.fit(self.pop_train,self.pop_train_val)
+                x_train, x_test, y_train, y_test =train_test_split(self.pop_train, self.pop_train_val,test_size=0.25, random_state=8)
+                self.model.fit(x_train,y_train)
                 fin_entrain=time.time()
                 self.temps_entrainement+=fin_entrain-debut_entrain
-                #y_pred_RF = self.model.predict(x_test)
-                #print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_RF))
+                y_pred_RF = self.model.predict(x_test)
+                print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_RF))
 
     def update_best(self):
         if self.ind_candidate.getCout() > self.ind_best.getCout():
@@ -259,7 +270,7 @@ class AG_En_Ligne:
         #elif(self.TypeExec==4) : self.population[i].calculerCoutReglesurThreads()
 
     def lancerAlgoGen(self):
-        debut_exec = time.time()
+        #debut_exec = time.time()
         self.train_model()
         if(self.TypeExec==0):  
             #self.afficherPop() # population initiale
@@ -268,13 +279,13 @@ class AG_En_Ligne:
                 self.mutation()
                 self.update_model()
                 self.update_best()
-                self.afficherPop()
-                print("==============================================================")
-                print("==============================================================")
-                print("==============================================================")
-        fin_exec = time.time()
-        self.temps_exec += (fin_exec - debut_exec)
-        print("le temps d'execution de l'AG en ligne = ",self.temps_exec)
+                #self.afficherPop()
+                #print("==============================================================")
+                #print("==============================================================")
+                #print("==============================================================")
+        #fin_exec = time.time()
+        #self.temps_exec += (fin_exec - debut_exec)
+        #print("le temps d'execution de l'AG en ligne = ",self.temps_exec)
         print("le temps d'encodage binaire = ",self.temps_encod)
         print("le temps d'evaluation reelle = ",self.temps_eval_reelle)
         print("le temps d'entrainement = ",self.temps_entrainement)
@@ -466,9 +477,12 @@ class AG_En_Ligne:
 
                 self.model_predict(mut)
                 self.population[j]=mut
-    
 
-#TraitementDeDonnees.lireDonneesSynthetiques('data\DataSet5.txt')
-#ag=AG_En_Ligne(150,50,0.4,0.6,0.5,0.5,4,0.3,0.6,True,0,0,0,0,1)
-
-#ag.lancerAlgoGen()
+'''
+TraitementDeDonnees.lireDonneesSynthetiques('data\data.txt')
+debut_exec=time.time()
+ag=AG_En_Ligne(50,30,0.4,0.6,0.5,0.5,10,0.3,0.6,True,0,0,0,0,1)
+ag.lancerAlgoGen()
+fin_exec = time.time()
+temps_exec = (fin_exec - debut_exec)
+print("le temps d'execution de l'AG simple = ",temps_exec)'''

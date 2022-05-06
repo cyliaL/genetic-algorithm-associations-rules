@@ -9,10 +9,9 @@ from Chromosome import Chromosome
 import random
 from Cout import cout
 from TraitementDeDonnees import TraitementDeDonnees
+import pandas as pd
 
-
-class AG:
-
+class AG_Hors_Ligne_Binaire:
     def __init__(self, nbIteration, taillePop, alpha, beta, pc, pm,  tailleMaxChromosome, minsup, minconf, 
     michigan ,typeCroisement, typeRemplacement, TypeExec):
         self.nbIterations=nbIteration
@@ -30,11 +29,6 @@ class AG:
         self.population=[]
         self.TypeExec = TypeExec
         self.temps_exec = 0
-        self.temps_eval_reelle=0
-        self.totalData=set()
-
-
-
 
         for i in range(self.taillePop):
             while(True):
@@ -49,6 +43,10 @@ class AG:
                     c.setIndice(ind)
 
                 c.chromosomeAlea()
+                #calcul = TraitementDeDonnees.calculFitnessCPU(c,self.alpha,self.beta)
+                #c.setCout(calcul.getFitness())
+                #c.setConfiance(calcul.getConfiance())
+                #c.setSupport(calcul.getSupport())
 
                 for x in self.population:
                     if x.equals(c):
@@ -56,25 +54,26 @@ class AG:
                         break
 
                 if(nouveau==True):
-
-                    debut_eval=time.time()
-                    c.calculerCoutRegleCPU()
-                    fin_eval=time.time()
-                    self.temps_eval_reelle+=fin_eval-debut_eval
-
                     self.population.append(c)
                     break
-
-
-
+                
+                            
 
     def calculCoutPop(self):
-        if(self.TypeExec==0) : 
+        if(self.TypeExec==0):
             for r in self.population:
-                debut_eval=time.time()
-                r.calculerCoutRegleCPU()
-                fin_eval=time.time()
-                self.temps_eval_reelle+=fin_eval-debut_eval
+                debut_encod = time.time()
+                r.encoderBinaire()
+                fin_encod = time.time()
+                TraitementDeDonnees.temps_encod+=(fin_encod-debut_encod)
+                fitness=TraitementDeDonnees.calculFitnessModelHorsLigneBinaire(r.binary)
+                r.setCout(fitness)
+            #for i,r in enumerate(self.population):
+                #r.setCout(fitness[i])
+
+
+                
+
                 #calcul=TraitementDeDonnees.calculFitnessCPU(r,self.alpha,self.beta)
                 #r.setCout(calcul.getFitness())
                 #r.setConfiance(calcul.getConfiance())
@@ -84,24 +83,20 @@ class AG:
         #elif(self.TypeExec==4) : self.population[i].calculerCoutReglesurThreads()
 
     def lancerAlgoGen(self):
-        #debut_exec = time.time()
-
+        debut_exec = time.time()
+       
         if(self.TypeExec==0):
-            #self.calculCoutPop()   
             #self.afficherPop() # population initiale
-            #print(self.nbIterations)
+            self.calculCoutPop()
             for i in range(self.nbIterations):
-                #print(i)
-                self.totalData.update(set(self.population))
+                #self.afficherPop()
                 self.croisement()
                 self.mutation()
+
+        fin_exec = time.time()
         #self.afficherPop()
-        self.totalData.update(set(self.population))
-        #fin_exec = time.time()
-        #self.temps_exec += (fin_exec - debut_exec)
-        #print("le temps d'execution de l'AG simple = ",self.temps_exec)
-        print("le temps d'evaluation réelle = ",self.temps_eval_reelle)
-        #TraitementDeDonnees.saveDonneesBinaires(self.totalData)
+        self.temps_exec += (fin_exec - debut_exec)
+        print("le temps d'execution de l'AG avec modèle hors-ligne = ", self.temps_exec)
         #self.AfficherReglesValide()
         #self.stats()
 
@@ -160,11 +155,15 @@ class AG:
                         ef2.getItems().append(self.population[paires[j+1]].getItems()[k])   
                     #======> evaluation des individus fils
                     if self.TypeExec==0:
-                        debut_eval=time.time()
-                        ef1.calculerCoutRegleCPU()
-                        ef2.calculerCoutRegleCPU()
-                        fin_eval=time.time()
-                        self.temps_eval_reelle+=fin_eval-debut_eval
+                        debut_encod = time.time()
+                        ef1.encoderBinaire()
+                        ef2.encoderBinaire()
+                        fin_encod = time.time()
+                        TraitementDeDonnees.temps_encod+=fin_encod-debut_encod            
+                        val=TraitementDeDonnees.calculFitnessModelHorsLigneBinaire([ef1.binary,ef2.binary])
+                        ef1.setCout(val[0])
+                        ef1.setCout(val[1])
+
                     
                     #======> remplacement des parents
                     remplace=0
@@ -200,11 +199,16 @@ class AG:
         
 
     def afficherPop(self):
+        print("===========================================================================")
+        print("===========================================================================")
+        print("===========================================================================")
+        print("===========================================================================")
         for x in self.population:
             x.afficherRegle()
 
 
     def AfficherReglesValide(self):
+
         print("----------Les Regles valides----------")
         for j in range(self.taillePop):
             if( self.population[j].getSupport() > self.minsup and self.population[j].getConfiance() > self.minconf):
@@ -243,7 +247,7 @@ class AG:
             print("Le nombre d'items utilisés : " ,countItems)
             print(" la taille moyenne est de : ",moyTaille)
             print("le temps d'execution = ",self.temps_exec, "secondes")
-            print("le temps d'encodage = ",self.temps_encod, "secondes")
+            print("le temps d'encodage = ",TraitementDeDonnees.temps_encod, "secondes")
             
 
 
@@ -276,21 +280,14 @@ class AG:
                     mut.getItems()[indice] = val
                     if(not self.contientRegle(mut)):
                         break
-                debut_eval=time.time()
-                mut.calculerCoutRegleCPU()
-                fin_eval=time.time()
-                self.temps_eval_reelle+=fin_eval-debut_eval
+                debut_encod = time.time()
+                mut.encoderBinaire()
+                fin_encod = time.time()
+                TraitementDeDonnees.temps_encod+=fin_encod-debut_encod 
+                c=TraitementDeDonnees.calculFitnessModelHorsLigneBinaire([mut.binary])
+                mut.setCout(c)
                 self.population[j]=mut
+                
 
 
 
-
-'''
-TraitementDeDonnees.lireDonneesSynthetiques('data\data.txt')
-debut_exec = time.time()
-ag=AG(50,30,0.4,0.6,0.5,0.5,10,0.3,0.6,True,0,0,0)
-ag.lancerAlgoGen()
-fin_exec = time.time()
-temps_exec = (fin_exec - debut_exec)
-TraitementDeDonnees.saveDonneesBinaires(ag.totalData)
-print("le temps d'execution de l'AG simple = ",temps_exec)'''
