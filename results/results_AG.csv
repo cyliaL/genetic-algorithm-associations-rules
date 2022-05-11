@@ -1,0 +1,9 @@
+ant_chocolate,ant_candy,ant_coke,ant_mango,ant_peanut,ant_pen,ant_luggage,ant_comforter,ant_bag,ant_cap,ant_detergent,ant_towel,conc_chocolate,conc_candy,conc_coke,conc_mango,conc_peanut,conc_pen,conc_luggage,conc_comforter,conc_bag,conc_cap,conc_detergent,conc_towel,fitness
+1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0
+0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0.64
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0.285
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0.095
+0,0,0,0,1,0,0,0,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0
+0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0.32
+0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0.285

@@ -152,11 +152,13 @@ class TraitementDeDonnees:
             l2.append(0)
             l3.append(0)
             writer.writerows([l1,l2,l3])
-            
+
+
+
 
     @staticmethod
     def generateModelHorsLigne(numModel):        
-        dataset = pd.read_csv('results/results_AG_simple.csv')
+        dataset = pd.read_csv('results/results_AG.csv')
         co = TraitementDeDonnees.totalItems
         #print(dataset)
         one_hot_encoded_data = pd.get_dummies(dataset, columns = co)
@@ -259,9 +261,24 @@ class TraitementDeDonnees:
             index+=1
         attributs=antecedants+conclusion+["fitness"]
         
-        with open("./results/results_AG_simple.csv", 'w', newline='') as file:
+        with open("./results/results_AG_simple.csv", 'a', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(attributs)
+            for r in totalData:
+                debut_encod = time.time()
+                r.encoderBinaire()
+                r.binary.append(r.cout)
+                fin_encod = time.time()
+                TraitementDeDonnees.temps_encod += (fin_encod - debut_encod) 
+                writer.writerow(r.binary)
+
+        
+
+    @staticmethod
+    def saveDonneesBinaires2(totalData):
+        print("hhhh")
+        with open("./results/results_AG_simple.csv", 'a', newline='') as file:
+            writer = csv.writer(file)
             for r in totalData:
                 debut_encod = time.time()
                 r.encoderBinaire()
@@ -276,9 +293,13 @@ class TraitementDeDonnees:
     @staticmethod
     def generateModelHorsLigneBinaire(numModel):        
         dataset = pd.read_csv('results/results_AG_simple.csv',header=0)
+        print(np.shape(dataset))
+        dataset.drop_duplicates(keep='first', inplace=True)
+        #print(dataset.zip_code.duplicated().sum())
+        print(np.shape(dataset))
         x= dataset.drop(columns=['fitness'])
         y= dataset["fitness"] # la colonne fitnesse 0
-        x_train, x_test, y_train, y_test =train_test_split(x, y,test_size=0.25, random_state=0)
+        x_train, x_test, y_train, y_test =train_test_split(x, y,test_size=0.1, random_state=0)
         '''--------------------------------------------------------------------------------'''
         if(numModel==0):
             print("Random Forest Regressor")

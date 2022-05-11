@@ -10,6 +10,7 @@ import random
 from Cout import cout
 from TraitementDeDonnees import TraitementDeDonnees
 import pandas as pd
+import matplotlib.pyplot as plt
 
 class AG_Hors_Ligne_Binaire:
     def __init__(self, nbIteration, taillePop, alpha, beta, pc, pm,  tailleMaxChromosome, minsup, minconf, 
@@ -29,6 +30,11 @@ class AG_Hors_Ligne_Binaire:
         self.population=[]
         self.TypeExec = TypeExec
         self.temps_exec = 0
+
+        self.indice=0
+        self.x=[]
+        self.y=[]
+        self.z=[]
 
         for i in range(self.taillePop):
             while(True):
@@ -66,8 +72,10 @@ class AG_Hors_Ligne_Binaire:
                 r.encoderBinaire()
                 fin_encod = time.time()
                 TraitementDeDonnees.temps_encod+=(fin_encod-debut_encod)
-                fitness=TraitementDeDonnees.calculFitnessModelHorsLigneBinaire(r.binary)
-                r.setCout(fitness)
+                fitness=TraitementDeDonnees.model.predict([r.binary])
+                r.setCout(fitness[0])
+
+
             #for i,r in enumerate(self.population):
                 #r.setCout(fitness[i])
 
@@ -84,17 +92,75 @@ class AG_Hors_Ligne_Binaire:
 
     def lancerAlgoGen(self):
         debut_exec = time.time()
-       
         if(self.TypeExec==0):
             #self.afficherPop() # population initiale
             self.calculCoutPop()
             for i in range(self.nbIterations):
                 #self.afficherPop()
+                #for j in range(self.taillePop):
+                    #self.trierPop()
+                    #self.x.append(self.indice)
+                    #self.indice+=1
+                    #self.y.append(self.population[j].getCout())
+                    #calcul=TraitementDeDonnees.calculFitnessCPU(self.population[j],self.alpha,self.beta)
+                    #self.population[0].afficherRegle()
+                    #self.z.append(calcul.getFitness())
+                self.y=[]
+                self.z=[]
+                for r in self.population:
+                    #self.x.append(self.indice)
+                    #self.indice+=1
+                    self.y.append(r.getCout())
+                    calcul=TraitementDeDonnees.calculFitnessCPU(r,self.alpha,self.beta)
+                    #self.population[0].afficherRegle()
+                    self.z.append(calcul.getFitness())
+
+                self.afficherPop()
+                #print(self.x)
+                print(self.y)
+                print(self.z)
+
+                #plt.plot(self.x, self.y, color='r', label='AG_horsLigne')
+                #plt.plot(self.x, self.z, color='g', label='AG_simple')
+                plt.figure(i)
+                plt.plot(self.y, marker='o', ms =6, color='r')
+                plt.plot(self.z, marker='o', ms=3, color='g')
+                plt.xlabel('individu')
+                plt.ylabel('fitness')
+                plt.title('la fitness au cours des générations')
+                plt.legend()
+                plt.show()
+
                 self.croisement()
                 self.mutation()
+            self.y=[]
+            self.z=[]
+            for r in self.population:
+                #self.x.append(self.indice)
+                #self.indice+=1
+                self.y.append(r.getCout())
+                calcul=TraitementDeDonnees.calculFitnessCPU(r,self.alpha,self.beta)
+                #self.population[0].afficherRegle()
+                self.z.append(calcul.getFitness())
 
+            self.afficherPop()
+            #print(self.x)
+            print(self.y)
+            print(self.z)
+
+            #plt.plot(self.x, self.y, color='r', label='AG_horsLigne')
+            #plt.plot(self.x, self.z, color='g', label='AG_simple')
+            plt.figure(i)
+            plt.plot(self.y, marker='o', ms =6, color='r')
+            plt.plot(self.z, marker='o', ms=3, color='g')
+            plt.xlabel('individu')
+            plt.ylabel('fitness')
+            plt.title('la fitness au cours des générations')
+            plt.legend()
+            plt.show()
+            #plt.clf()
+                
         fin_exec = time.time()
-        #self.afficherPop()
         self.temps_exec += (fin_exec - debut_exec)
         print("le temps d'execution de l'AG avec modèle hors-ligne = ", self.temps_exec)
         #self.AfficherReglesValide()
@@ -160,9 +226,10 @@ class AG_Hors_Ligne_Binaire:
                         ef2.encoderBinaire()
                         fin_encod = time.time()
                         TraitementDeDonnees.temps_encod+=fin_encod-debut_encod            
-                        val=TraitementDeDonnees.calculFitnessModelHorsLigneBinaire([ef1.binary,ef2.binary])
-                        ef1.setCout(val[0])
-                        ef1.setCout(val[1])
+                        val1=TraitementDeDonnees.model.predict([ef1.binary])
+                        ef1.setCout(val1[0])
+                        val2=TraitementDeDonnees.model.predict([ef2.binary])
+                        ef2.setCout(val2[0])
 
                     
                     #======> remplacement des parents
@@ -284,10 +351,26 @@ class AG_Hors_Ligne_Binaire:
                 mut.encoderBinaire()
                 fin_encod = time.time()
                 TraitementDeDonnees.temps_encod+=fin_encod-debut_encod 
-                c=TraitementDeDonnees.calculFitnessModelHorsLigneBinaire([mut.binary])
-                mut.setCout(c)
+                c=TraitementDeDonnees.model.predict([mut.binary])
+                mut.setCout(c[0])
                 self.population[j]=mut
                 
 
 
 
+TraitementDeDonnees.lireDonneesSynthetiques('data\Dataset5.txt')
+TraitementDeDonnees.generateModelHorsLigneBinaire(0)
+'''TraitementDeDonnees.temps_calc_fitness=0
+TraitementDeDonnees.temps_encod=0
+TraitementDeDonnees.temps_prediction=0
+TraitementDeDonnees.generateModelHorsLigneBinaire(0)
+#x=pd.DataFrame()'''
+
+
+agHorsLigne=AG_Hors_Ligne_Binaire(100,100,0.4,0.6,0.9,0.1,5,0.3,0.6,True,0,0,0)
+
+#val=TraitementDeDonnees.model.predict([[1,0,0,1,0,0,0,0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0]])
+#print(val)
+agHorsLigne.lancerAlgoGen()
+#print("le temps de prédiction = ", TraitementDeDonnees.temps_prediction)
+#print("le temps d'encodage = ", TraitementDeDonnees.temps_encod)

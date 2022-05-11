@@ -9,6 +9,7 @@ from Chromosome import Chromosome
 import random
 from Cout import cout
 from TraitementDeDonnees import TraitementDeDonnees
+import matplotlib.pyplot as plt
 
 
 class AG:
@@ -65,6 +66,7 @@ class AG:
                     self.population.append(c)
                     break
 
+        #self.totalData.update(set(self.population))
 
 
 
@@ -84,27 +86,38 @@ class AG:
         #elif(self.TypeExec==4) : self.population[i].calculerCoutReglesurThreads()
 
     def lancerAlgoGen(self):
-        #debut_exec = time.time()
-
+        x=[]
+        y=[]
         if(self.TypeExec==0):
             #self.calculCoutPop()   
             #self.afficherPop() # population initiale
             #print(self.nbIterations)
             for i in range(self.nbIterations):
-                #print(i)
+                print(i)
+                self.trierPop()
+                #print(self.population[self.taillePop-1].getCout())
+                x.append(i)
+                y.append(self.population[self.taillePop-1].getCout())
                 self.totalData.update(set(self.population))
                 self.croisement()
                 self.mutation()
         #self.afficherPop()
         self.totalData.update(set(self.population))
+        self.trierPop()
+        x.append(self.nbIterations)
+        y.append(self.population[self.taillePop-1].getCout())
+
+        # plotting the line 2 points
+        #plt.plot(x, y, label = "AG_Simple")
+        #plt.xlabel('x - générations')
+        #plt.ylabel('y - meilleur fitness')
+        #plt.title('la fitness au cours des générations')
+        #plt.legend()
+        #plt.show()
         #fin_exec = time.time()
         #self.temps_exec += (fin_exec - debut_exec)
         #print("le temps d'execution de l'AG simple = ",self.temps_exec)
         print("le temps d'evaluation réelle = ",self.temps_eval_reelle)
-        #TraitementDeDonnees.saveDonneesBinaires(self.totalData)
-        #self.AfficherReglesValide()
-        #self.stats()
-
 
 
     def croisement(self): 
@@ -212,6 +225,8 @@ class AG:
                 self.population[j].afficherRegle()
             else : self.population[j].setValide(False)
 
+
+
     def stats(self):
         countRegles=0
         countItems=0
@@ -285,12 +300,13 @@ class AG:
 
 
 
-'''
-TraitementDeDonnees.lireDonneesSynthetiques('data\data.txt')
+
+TraitementDeDonnees.lireDonneesSynthetiques('data\DataSet5.txt')
 debut_exec = time.time()
-ag=AG(50,30,0.4,0.6,0.5,0.5,10,0.3,0.6,True,0,0,0)
+ag=AG(200,50,0.4,0.6,0.9,0.1,2,0.3,0.6,True,0,0,0)
 ag.lancerAlgoGen()
 fin_exec = time.time()
 temps_exec = (fin_exec - debut_exec)
-TraitementDeDonnees.saveDonneesBinaires(ag.totalData)
-print("le temps d'execution de l'AG simple = ",temps_exec)'''
+TraitementDeDonnees.saveDonneesBinaires2(ag.totalData)
+#TraitementDeDonnees.saveDonneesBinaires(ag.totalData)
+print("le temps d'execution de l'AG simple = ",temps_exec)

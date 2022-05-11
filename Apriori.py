@@ -11,7 +11,6 @@ TraitementDeDonnees.lireDonneesTransactions("data\data_test.txt")
 
 te = TransactionEncoder()
 te_ary = te.fit(TraitementDeDonnees.bdd).transform(TraitementDeDonnees.bdd)
-print(te_ary)
 te_ary.astype(int)
 print(te.columns_)
 
@@ -20,6 +19,7 @@ df1 = apriori(df,min_support=0.4,use_colnames=True,verbose =1)
 print(df1)
 
 output= association_rules(df1, metric = "confidence", min_threshold = 0.5)
+
 print(output)
 
 

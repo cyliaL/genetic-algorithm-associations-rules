@@ -17,6 +17,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn import svm
 from sklearn.tree import DecisionTreeRegressor 
 from sklearn.neural_network import MLPRegressor
+import matplotlib.pyplot as plt
 
 
 class AG_En_Ligne:
@@ -50,6 +51,11 @@ class AG_En_Ligne:
         self.temps_prediction=0
         self.temps_exec = 0
         self.temps_encod=0
+
+        self.indice=0
+        self.x=[]
+        self.y=[]
+        self.z=[]
         
         
         for i in range(self.taillePop):
@@ -92,58 +98,6 @@ class AG_En_Ligne:
         self.ind_best=self.population[0]
         self.ind_candidate=self.population[0]
 
-        '''for i in range(self.taillePop - 1):
-            if self.population[i + 1].getCout() > self.ind_best.getCout():
-                self.ind_best = self.population[i + 1]'''
-
-
-
-        
-         
-
-       
-                
-                            
-
-    '''def initialize(self):
-        for i in range(self.taillePop):
-            while(True):
-                #print("hhh")
-                nouveau=True
-                t=random.randrange(2, self.tailleMaxChromosome+1)
-                c=Chromosome(t,0,0,0,0,self.alpha,self.beta,False)
-                ind=random.randrange(1, t)
-                if(self.michigan):
-                    c.setIndice(t-1)
-                else:
-                    c.setIndice(ind)
-
-                c.chromosomeAlea()
-                #calcul = TraitementDeDonnees.calculFitnessCPU(c,self.alpha,self.beta)
-                #c.setCout(calcul.getFitness())
-                #c.setConfiance(calcul.getConfiance())
-                #c.setSupport(calcul.getSupport())
-
-                for x in self.population:
-                    if x.equals(c):
-                        nouveau=False
-                        break
-
-                if(nouveau==True):
-                    c.encoderBinaire()
-                    self.population.append(c)
-                    self.pop_train.append(c.binary)
-                    break
-        
-        self.eval_function_pop()
-        for r in self.population:
-            self.pop_train_val.append(r.getCout())
-
-        self.ind_best=self.population[0]
-
-        for i in range(self.taillePop - 1):
-            if self.population[i + 1].getCout() > self.ind_best.getCout():
-                self.ind_best = self.population[i + 1]'''
 
 
     def train_model(self):
@@ -182,13 +136,13 @@ class AG_En_Ligne:
 
 
     
-    def model_predict(self,x):
-        data=[x.binary]
+    def model_predict(self,regle):
+        data=[regle.binary]
         debut_pred=time.time()
         val = self.model.predict(data)
         fin_pred=time.time()
         self.temps_prediction+=fin_pred-debut_pred
-        x.setCout(val)
+        regle.setCout(val)
     
 
     def update_model(self):
@@ -197,32 +151,45 @@ class AG_En_Ligne:
             #for x in pop_sort:
                 #x.afficherRegle()
             for i in range(len(self.population)):
+                print(i)
                 self.ind_candidate = self.population[i]
                 if self.ind_candidate not in (self.pop_train):
                     #self.ind_candidate.encoderBinaire()
                     #self.ind_candidate.afficherRegle()
                     #print(self.pop_train)
                     #print(self.pop_train_val)
-                    self.eval_function(self.ind_candidate)
+                    self.x.append(self.indice)
+                    self.indice+=1
+                    self.y.append(self.ind_candidate.getCout())
+                    #self.eval_function(self.ind_candidate)
+                    debut_eval=time.time()
+                    calcul=TraitementDeDonnees.calculFitnessCPU(self.ind_candidate,self.alpha,self.beta)
+                    fin_eval=time.time()
+                    self.temps_eval_reelle+=fin_eval-debut_eval
+                    self.ind_candidate.setCout(calcul.getFitness())
+                    self.ind_candidate.setConfiance(calcul.getConfiance())
+                    self.ind_candidate.setSupport(calcul.getSupport())
+                    self.z.append(calcul.getFitness())
+
                     self.pop_train.append(self.ind_candidate.binary)
                     self.pop_train_val.append(self.ind_candidate.getCout())
-                    #print(self.pop_train)
-                    #print(self.pop_train_val)
-                    #debut_entrain=time.time()
-                    #self.model.fit(self.pop_train, self.pop_train_val)
-                    #fin_entrain=time.time()
-                    #self.temps_entrainement+=fin_entrain-debut_entrain
+                    print(self.pop_train)
+                    print(self.pop_train_val)
                     debut_entrain=time.time()
-                    x_train, x_test, y_train, y_test =train_test_split(self.pop_train, self.pop_train_val,test_size=0.25, random_state=8)
-                    self.model.fit(x_train,y_train)
+                    self.model.fit(self.pop_train, self.pop_train_val)
                     fin_entrain=time.time()
                     self.temps_entrainement+=fin_entrain-debut_entrain
-                    y_pred_RF = self.model.predict(x_test)
-                    print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_RF))
+                    #debut_entrain=time.time()
+                    #x_train, x_test, y_train, y_test =train_test_split(self.pop_train, self.pop_train_val,test_size=0.25, random_state=8)
+                    #self.model.fit(x_train,y_train)
+                    #fin_entrain=time.time()
+                    #self.temps_entrainement+=fin_entrain-debut_entrain
+                    #y_pred_RF = self.model.predict(x_test)
+                    #print('Erreur quadratique moyenne (Root Mean Squared Error):', mean_squared_error(y_test, y_pred_RF))
 
                     break
         else:
-            if self.nbIterations%10==0:
+            if self.maxIterations%10==0:
                 #print(len(self.pop_train))
                 for r in self.population:
                     self.eval_function(r)
@@ -270,28 +237,39 @@ class AG_En_Ligne:
         #elif(self.TypeExec==4) : self.population[i].calculerCoutReglesurThreads()
 
     def lancerAlgoGen(self):
-        #debut_exec = time.time()
-        self.train_model()
-        if(self.TypeExec==0):  
+
+        if(self.TypeExec==0):
+
+            self.train_model()
+            #self.calculCoutPop()   
             #self.afficherPop() # population initiale
-            for self.nbIterations in range(self.maxIterations):
+            #print(self.nbIterations)
+            for i in range(self.maxIterations):
                 self.croisement()
                 self.mutation()
                 self.update_model()
                 self.update_best()
-                #self.afficherPop()
-                #print("==============================================================")
-                #print("==============================================================")
-                #print("==============================================================")
+        self.trierPop()
+
+        # plotting the line 2 points
+        #plt.scatter(self.x, self.y, label= 'AGsimple', color= "green", marker= "*", s=30)
+        #plt.scatter(self.x, self.y, label= 'AG_EnLigne', color= "red", marker= "*", s=30)
+        plt.plot(self.x, self.y, color='r', label='AGsimple')
+        plt.plot(self.x, self.z, color='g', label='AG_EnLing')
+        plt.xlabel('individu')
+        plt.ylabel('fitness')
+        plt.title('la fitness au cours des générations')
+        plt.legend()
+        plt.show()
         #fin_exec = time.time()
         #self.temps_exec += (fin_exec - debut_exec)
-        #print("le temps d'execution de l'AG en ligne = ",self.temps_exec)
+        #print("le temps d'execution de l'AG simple = ",self.temps_exec)
         print("le temps d'encodage binaire = ",self.temps_encod)
         print("le temps d'evaluation reelle = ",self.temps_eval_reelle)
         print("le temps d'entrainement = ",self.temps_entrainement)
         print("le temps de prediction = ",self.temps_prediction)
-        #self.AfficherReglesValide()
-        #self.stats()
+
+
 
 
 
@@ -478,11 +456,11 @@ class AG_En_Ligne:
                 self.model_predict(mut)
                 self.population[j]=mut
 
-'''
-TraitementDeDonnees.lireDonneesSynthetiques('data\data.txt')
+
+TraitementDeDonnees.lireDonneesSynthetiques('data\mushroom.txt')
 debut_exec=time.time()
-ag=AG_En_Ligne(50,30,0.4,0.6,0.5,0.5,10,0.3,0.6,True,0,0,0,0,1)
+ag=AG_En_Ligne(50,200,0.4,0.6,0.9,0.1,7,0.3,0.6,True,0,0,0,0,0)
 ag.lancerAlgoGen()
 fin_exec = time.time()
 temps_exec = (fin_exec - debut_exec)
-print("le temps d'execution de l'AG simple = ",temps_exec)'''
+print("le temps d'execution de l'AG simple = ",temps_exec)

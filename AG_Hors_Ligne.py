@@ -281,7 +281,7 @@ class AG_Hors_Ligne:
                 self.population[j]=mut
 
 
-TraitementDeDonnees.lireDonneesSynthetiques('data\data.txt')
+'''TraitementDeDonnees.lireDonneesSynthetiques('data\data.txt')
 debut_exec = time.time()
 ag=AG(50,30,0.4,0.6,0.5,0.5,10,0.3,0.6,True,0,0,0)
 ag.lancerAlgoGen()
@@ -291,7 +291,7 @@ print("le temps d'execution de l'AG simple = ",temps_exec)
 TraitementDeDonnees.saveDonneesBinaires(ag.totalData)
 print("le temps de calcul de la fitness réelle durant l'optimisation = ", TraitementDeDonnees.temps_calc_fitness)
 print("le temps de l'encodage = ", TraitementDeDonnees.temps_encod)
-print("==========================================================================================")
+print("==========================================================================================")'''
 '''TraitementDeDonnees.lireDonneesSynthetiques('data\data.txt')
 TraitementDeDonnees.temps_calc_fitness=0
 TraitementDeDonnees.temps_encod=0

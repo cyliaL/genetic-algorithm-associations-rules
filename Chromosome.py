@@ -110,12 +110,14 @@ class Chromosome:
 
 
     def chromosomeAlea(self): #err
+        Total=list(TraitementDeDonnees.totalItems)
+        random.shuffle(Total)
         for i in range(self.taille):
             while True:
                 nouveau=True
                 #print(TraitementDeDonnees.nbItems)
                 x=random.randrange(0, TraitementDeDonnees.nbItems,1)
-                self.items.append(TraitementDeDonnees.totalItems[x])
+                self.items.append(Total[x])
                 
                 j=0
                 while j<i:
@@ -198,7 +200,7 @@ class Chromosome:
 
 
     def encoderBinaire(self):
-        #self.binary=[]
+        self.binary=[]
         antecedants=[]
         conclusion=[]
         for it in TraitementDeDonnees.totalItems:
@@ -222,6 +224,8 @@ class Chromosome:
                 j += 1
             if j==self.taille:
                 self.binary.append(0)
+        
+        
 
 
 '''
